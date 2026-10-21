@@ -9,7 +9,7 @@ const chatSend = document.getElementById('chat-send');
 let chatHistory = [];
 let chatBusy = false;
 
-const CHAT_ENDPOINT = 'chat.php';
+const CHAT_ENDPOINTS = ['/api/chat', 'chat.php'];
 
 const ICON_CHAT = '<i class="fa-solid fa-comment-dots"></i>';
 const ICON_CLOSE = '<i class="fa-solid fa-chevron-down"></i>';
@@ -88,34 +88,47 @@ async function sendMessage(text) {
 
     const typing = showTyping();
 
-    try {
-        const res = await fetch(CHAT_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message, history: chatHistory })
-        });
+    let handled = false;
 
-        const data = await res.json();
-        typing.remove();
+    for (const endpoint of CHAT_ENDPOINTS) {
+        try {
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message, history: chatHistory })
+            });
 
-        if (!res.ok || data.error) {
-            addMessage(data.error || 'Terjadi kesalahan. Coba lagi ya.', 'bot');
-        } else {
+            if (!res.ok) {
+                continue;
+            }
+
+            const data = await res.json();
+            if (data.error) {
+                continue;
+            }
+
+            typing.remove();
             addMessage(data.reply, 'bot');
             chatHistory.push({ role: 'user', text: message });
             chatHistory.push({ role: 'model', text: data.reply });
             if (chatHistory.length > 20) {
                 chatHistory = chatHistory.slice(-20);
             }
+            handled = true;
+            break;
+        } catch (err) {
+            continue;
         }
-    } catch (err) {
+    }
+
+    if (!handled) {
         typing.remove();
         addMessage('Koneksi gagal. Pastikan server berjalan lalu coba lagi.', 'bot');
-    } finally {
-        chatBusy = false;
-        chatSend.disabled = false;
-        chatInput.focus();
     }
+
+    chatBusy = false;
+    chatSend.disabled = false;
+    chatInput.focus();
 }
 
 chatForm.addEventListener('submit', (e) => {
