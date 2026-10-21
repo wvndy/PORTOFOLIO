@@ -1,0 +1,7 @@
+# Secrets / local config (contains API keys)
+chat.php
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

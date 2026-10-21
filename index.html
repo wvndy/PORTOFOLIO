@@ -302,8 +302,46 @@
         </footer>
     </main>
 
+    <!-- AI Chatbot Widget -->
+    <button id="chat-toggle" class="chat-toggle glass-effect" aria-label="Buka chat">
+        <i class="fa-solid fa-comment-dots"></i>
+    </button>
+
+    <div id="chat-panel" class="chat-panel glass-effect">
+        <div class="chat-header">
+            <div class="flex items-center gap-3">
+                <span class="chat-avatar"><i class="fa-solid fa-robot"></i></span>
+                <div class="text-left">
+                    <p class="font-semibold leading-tight">Asisten Swandy</p>
+                    <p class="text-xs text-green-400 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Online
+                    </p>
+                </div>
+            </div>
+            <button id="chat-close" class="chat-close" aria-label="Tutup chat">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <div id="chat-messages" class="chat-messages"></div>
+
+        <div class="chat-suggest-wrap">
+            <button class="chat-suggest">Siapa Swandy?</button>
+            <button class="chat-suggest">Proyek apa saja?</button>
+            <button class="chat-suggest">Bagaimana cara kontak?</button>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+            <textarea id="chat-input" rows="1" placeholder="Tulis pesan..." autocomplete="off"></textarea>
+            <button id="chat-send" type="submit" class="chat-send" aria-label="Kirim">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
     <!-- Vanilla Javascript Logic -->
     <script type="module" src="main.js"></script>
+    <script src="chat.js"></script>
     <script>
         // Vanilla Re-creation of Framer Motion style scroll animations
         document.addEventListener('DOMContentLoaded', () => {
