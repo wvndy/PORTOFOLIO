@@ -1,247 +1,375 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+/* =========================================================
+   Spider-Man Comic Portfolio — interactions
+   Canvas 2D web network + cursor + guestbook + timeline
+   ========================================================= */
 
-// 1. Setup Scene, Camera, and Renderer
-const canvas = document.querySelector('#bg-canvas');
-const scene = new THREE.Scene();
+(function () {
+    'use strict';
 
-// We want a space-like fog
-scene.fog = new THREE.FogExp2(0x030014, 0.02);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 25;
+    /* -----------------------------------------------------
+       1. Background: web network on 2D canvas
+       ----------------------------------------------------- */
+    const canvas = document.getElementById('bg-canvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let W, H, DPR;
+        let nodes = [];
+        let mouse = { x: -9999, y: -9999 };
+        let scrollY = 0;
+        let currentScroll = 0;
 
-const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    alpha: true,
-    antialias: true
-});
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        const RED = '230, 36, 41';
+        const BLUE = '43, 108, 176';
 
-// 2. Add Space Elements (Stars / Particles)
-const starsGeometry = new THREE.BufferGeometry();
-const starsCount = 2000;
-const posArray = new Float32Array(starsCount * 3);
-const colorsArray = new Float32Array(starsCount * 3);
-
-// Define palette for stars (white, light blue, light purple)
-const color1 = new THREE.Color(0xffffff); // white
-const color2 = new THREE.Color(0x8B5CF6); // purple
-const color3 = new THREE.Color(0x3B82F6); // blue
-
-for(let i = 0; i < starsCount * 3; i+=3) {
-    // Spherical distribution radius ~100
-    const r = 40 + Math.random() * 60;
-    const theta = 2 * Math.PI * Math.random();
-    const phi = Math.acos(2 * Math.random() - 1);
-    
-    posArray[i] = r * Math.sin(phi) * Math.cos(theta);
-    posArray[i+1] = r * Math.sin(phi) * Math.sin(theta);
-    posArray[i+2] = r * Math.cos(phi);
-
-    // Random colors
-    const mix = Math.random();
-    let starColor = color1;
-    if (mix > 0.8) starColor = color2;
-    if (mix < 0.2) starColor = color3;
-
-    colorsArray[i] = starColor.r;
-    colorsArray[i+1] = starColor.g;
-    colorsArray[i+2] = starColor.b;
-}
-
-starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-starsGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
-
-const starsMaterial = new THREE.PointsMaterial({
-    size: 0.15,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.8,
-    blending: THREE.AdditiveBlending
-});
-
-const starField = new THREE.Points(starsGeometry, starsMaterial);
-scene.add(starField);
-
-// 2.5 Add 3D Planets
-const planets = [];
-
-const createPlanet = (radius, color, x, y, z) => {
-    const geometry = new THREE.SphereGeometry(radius, 64, 64);
-    const material = new THREE.MeshStandardMaterial({
-        color: color,
-        emissive: color, // Make the planets glow from within
-        emissiveIntensity: 0.3, // Brighten them up
-        roughness: 0.4,
-        metalness: 0.2,
-    });
-    const planet = new THREE.Mesh(geometry, material);
-    planet.position.set(x, y, z);
-    
-    // Create an outer glow (atmosphere) for the planet
-    const glowMaterial = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.15,
-        side: THREE.BackSide,
-        blending: THREE.AdditiveBlending
-    });
-    const atmosphere = new THREE.Mesh(geometry, glowMaterial);
-    atmosphere.scale.set(1.2, 1.2, 1.2);
-    planet.add(atmosphere);
-
-    scene.add(planet);
-    planets.push({ mesh: planet, initialX: x, initialY: y });
-    return planet;
-};
-
-// Purple planet (top right)
-createPlanet(8, 0x8B5CF6, 25, 15, -30);
-// Blue planet (bottom left)
-createPlanet(5, 0x3B82F6, -20, -10, -20);
-// Cyan small planet (far left)
-createPlanet(3, 0x00f0ff, -15, 20, -40);
-
-// 3. Add a Hero 3D Object (Astronaut / Tech Placeholder)
-const heroGroup = new THREE.Group();
-
-// Load Astronaut Model
-const gltfLoader = new GLTFLoader();
-const astronautUrl = 'https://raw.githubusercontent.com/google/model-viewer/master/packages/shared-assets/models/Astronaut.glb';
-
-let mixer; // For animation
-
-gltfLoader.load(
-    astronautUrl,
-    (gltf) => {
-        const model = gltf.scene;
-        // Scale it drastically up because the raw GLB model is very small
-        model.scale.set(17.0, 17.0, 17.0); // Slightly scaled down from 20.0
-        
-        // Add animation if present
-        if (gltf.animations && gltf.animations.length) {
-            mixer = new THREE.AnimationMixer(model);
-            const action = mixer.clipAction(gltf.animations[0]);
-            action.play();
+        function resize() {
+            DPR = Math.min(window.devicePixelRatio || 1, 2);
+            W = window.innerWidth;
+            H = window.innerHeight;
+            canvas.width = W * DPR;
+            canvas.height = H * DPR;
+            canvas.style.width = W + 'px';
+            canvas.style.height = H + 'px';
+            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+            buildNodes();
         }
-        
-        heroGroup.add(model);
-    },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    },
-    (error) => {
-        console.error('An error happened loading the Astronaut model', error);
+
+        function buildNodes() {
+            const count = Math.min(90, Math.floor((W * H) / 16000));
+            nodes = [];
+            for (let i = 0; i < count; i++) {
+                nodes.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    r: Math.random() * 1.8 + 0.8,
+                    c: Math.random() > 0.5 ? RED : BLUE
+                });
+            }
+        }
+
+        const MAX_DIST = 150;
+
+        function draw() {
+            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+            ctx.clearRect(0, 0, W, H);
+
+            currentScroll += (scrollY - currentScroll) * 0.1;
+            ctx.save();
+            ctx.translate(0, -currentScroll * 0.06);
+
+            for (const n of nodes) {
+                n.x += n.vx;
+                n.y += n.vy;
+
+                if (n.x < 0 || n.x > W) n.vx *= -1;
+                if (n.y < 0 || n.y > H) n.vy *= -1;
+
+                // gentle mouse repel
+                const mdx = n.x - mouse.x;
+                const mdy = n.y - mouse.y;
+                const md = Math.hypot(mdx, mdy);
+                if (md < 120 && md > 0) {
+                    const f = (120 - md) / 120;
+                    n.x += (mdx / md) * f * 1.2;
+                    n.y += (mdy / md) * f * 1.2;
+                }
+
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${n.c}, 0.7)`;
+                ctx.fill();
+            }
+
+            // draw web lines between nearby nodes
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i];
+                    const b = nodes[j];
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const d = Math.hypot(dx, dy);
+                    if (d < MAX_DIST) {
+                        const alpha = (1 - d / MAX_DIST) * 0.28;
+                        ctx.strokeStyle = `rgba(${BLUE}, ${alpha})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // connect nodes to cursor (web catching)
+            for (const n of nodes) {
+                const d = Math.hypot(n.x - mouse.x, n.y - mouse.y);
+                if (d < 180) {
+                    const alpha = (1 - d / 180) * 0.45;
+                    ctx.strokeStyle = `rgba(${RED}, ${alpha})`;
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.moveTo(n.x, n.y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.stroke();
+                }
+            }
+
+            ctx.restore();
+
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = -9999;
+            mouse.y = -9999;
+        });
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+        });
+        window.addEventListener('resize', resize);
+
+        resize();
+        if (!reduceMotion) draw();
+        else {
+            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+            ctx.clearRect(0, 0, W, H);
+        }
     }
-);
 
-// Position it to the right for desktop, center for mobile
-const isMobile = window.innerWidth < 768;
-heroGroup.position.set(isMobile ? 0 : 8, isMobile ? -14 : -18, 0); // Adjusted height even lower
-scene.add(heroGroup);
+    /* -----------------------------------------------------
+       2. Reveal on scroll
+       ----------------------------------------------------- */
+    const revealObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '0px', threshold: 0.1 });
 
-// 4. Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
+    document.querySelectorAll('.reveal-anim').forEach((el) => revealObserver.observe(el));
 
-const pointLight1 = new THREE.PointLight(0x8B5CF6, 200, 100);
-pointLight1.position.set(10, 10, 10);
-scene.add(pointLight1);
+    /* -----------------------------------------------------
+       3. Card tilt + hover glow
+       ----------------------------------------------------- */
+    document.querySelectorAll('.comic-card').forEach((card) => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
 
-const pointLight2 = new THREE.PointLight(0x00f0ff, 200, 100);
-pointLight2.position.set(-10, -10, 10);
-scene.add(pointLight2);
-
-// 5. Interaction (Mouse & Scroll)
-let mouseX = 0;
-let mouseY = 0;
-let targetX = 0;
-let targetY = 0;
-
-const windowHalfX = window.innerWidth / 2;
-const windowHalfY = window.innerHeight / 2;
-
-document.addEventListener('mousemove', (event) => {
-    mouseX = (event.clientX - windowHalfX);
-    mouseY = (event.clientY - windowHalfY);
-});
-
-let scrollY = window.scrollY;
-let currentScrollY = scrollY;
-window.addEventListener('scroll', () => {
-    scrollY = window.scrollY;
-});
-
-// 6. Animation Loop
-const clock = new THREE.Clock();
-
-function animate() {
-    requestAnimationFrame(animate);
-
-    const elapsedTime = clock.getElapsedTime();
-
-    // Smooth scroll interpolation
-    currentScrollY += (scrollY - currentScrollY) * 0.1;
-
-    // Smooth mouse interpolation
-    targetX = mouseX * 0.001;
-    targetY = mouseY * 0.001;
-
-    // Animate Starfield slowly
-    starField.rotation.y = elapsedTime * 0.02;
-    starField.rotation.x = elapsedTime * 0.01;
-    
-    // Parallax effect on starfield based on mouse
-    starField.rotation.y += 0.05 * (targetX - starField.rotation.y);
-    starField.rotation.x += 0.05 * (targetY - starField.rotation.x);
-
-    // Update Astronaut animation
-    if(mixer) {
-        mixer.update(0.016); // Approx 60fps delta
-    }
-
-    // Floating Up and Down based on time
-    heroGroup.position.y = (isMobile ? -14 : -18) + Math.sin(elapsedTime * 1.5) * 0.5;
-    
-    // Add a slight rotation for floaty feel
-    heroGroup.rotation.y = Math.sin(elapsedTime * 0.5) * 0.2 - 0.2;
-    heroGroup.rotation.z = Math.sin(elapsedTime * 0.3) * 0.1;
-
-    // Move slightly based on scroll to create parallax
-    heroGroup.position.y += currentScrollY * 0.005;
-
-    // Animate planets
-    planets.forEach((p, index) => {
-        p.mesh.rotation.y += 0.002;
-        p.mesh.rotation.x += 0.001;
-        // Floating effect
-        p.mesh.position.y = p.initialY + Math.sin(elapsedTime * 1.0 + index) * 1.0;
-        // Parallax effect based on mouse
-        p.mesh.position.x += ((p.initialX + targetX * 15) - p.mesh.position.x) * 0.05;
-        p.mesh.position.y += ((p.initialY + targetY * 15) - p.mesh.position.y) * 0.05;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const rotX = ((y - cy) / cy) * -2.5;
+            const rotY = ((x - cx) / cx) * 2.5;
+            card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
     });
 
-    // Camera rig movement on scroll
-    camera.position.y = -(currentScrollY * 0.01);
-    
-    // Camera parallax on mouse move
-    camera.position.x += (mouseX * 0.01 - camera.position.x) * 0.05;
+    /* -----------------------------------------------------
+       4. Custom cursor + trails + click web-splat
+       ----------------------------------------------------- */
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorRing = document.getElementById('cursor-ring');
+    const cursorGlow = document.getElementById('cursor-glow');
 
-    renderer.render(scene, camera);
-}
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
 
-animate();
+    const trailCount = 10;
+    const trails = [];
+    if (!reduceMotion && window.innerWidth >= 768) {
+        for (let i = 0; i < trailCount; i++) {
+            const t = document.createElement('div');
+            t.className = 'cursor-trail';
+            document.body.appendChild(t);
+            trails.push({ el: t, x: mouseX, y: mouseY });
+        }
+    }
 
-// 7. Handle Resize
-window.addEventListener('resize', () => {
-    const mobileCheck = window.innerWidth < 768;
-    heroGroup.position.set(mobileCheck ? 0 : 8, mobileCheck ? -14 : -18, 0);
-    
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-});
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (cursorDot) {
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
+        }
+        if (cursorGlow) {
+            cursorGlow.style.left = `${mouseX}px`;
+            cursorGlow.style.top = `${mouseY}px`;
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (reduceMotion) return;
+        const splat = document.createElement('div');
+        splat.className = 'click-effect';
+        splat.style.left = `${e.clientX}px`;
+        splat.style.top = `${e.clientY}px`;
+        document.body.appendChild(splat);
+        setTimeout(() => splat.remove(), 700);
+    });
+
+    function animateCursor() {
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        if (cursorRing) {
+            cursorRing.style.left = `${ringX}px`;
+            cursorRing.style.top = `${ringY}px`;
+        }
+
+        let lastX = mouseX;
+        let lastY = mouseY;
+        trails.forEach((t, i) => {
+            t.x += (lastX - t.x) * (0.3 + i * 0.02);
+            t.y += (lastY - t.y) * (0.3 + i * 0.02);
+            t.el.style.left = `${t.x}px`;
+            t.el.style.top = `${t.y}px`;
+            t.el.style.opacity = (1 - i / trailCount) * 0.6;
+            t.el.style.transform = `translate(-50%, -50%) scale(${1 - i / trailCount})`;
+            lastX = t.x;
+            lastY = t.y;
+        });
+
+        requestAnimationFrame(animateCursor);
+    }
+    if (!reduceMotion) animateCursor();
+
+    document.querySelectorAll('a, button, .comic-card').forEach((el) => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('hovering-link'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('hovering-link'));
+    });
+
+    /* -----------------------------------------------------
+       5. Scroll spider
+       ----------------------------------------------------- */
+    const scrollSpider = document.getElementById('scroll-spider');
+    if (scrollSpider) {
+        const update = () => {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = max > 0 ? window.scrollY / max : 0;
+            scrollSpider.style.top = `${pct * (window.innerHeight - 60) + 30}px`;
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+    }
+
+    /* -----------------------------------------------------
+       6. Mobile menu
+       ----------------------------------------------------- */
+    const burger = document.getElementById('nav-burger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (burger && mobileMenu) {
+        burger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+        mobileMenu.querySelectorAll('a').forEach((a) =>
+            a.addEventListener('click', () => mobileMenu.classList.remove('open'))
+        );
+    }
+
+    /* -----------------------------------------------------
+       7. Guestbook (localStorage)
+       ----------------------------------------------------- */
+    const GUEST_KEY = 'swandy_guestbook_v1';
+    const form = document.getElementById('guest-form');
+    const nameInput = document.getElementById('guest-name');
+    const msgInput = document.getElementById('guest-msg');
+    const list = document.getElementById('guest-list');
+    const countEl = document.getElementById('guest-count');
+    const clearBtn = document.getElementById('guest-clear');
+
+    function loadGuests() {
+        try {
+            const raw = localStorage.getItem(GUEST_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (err) {
+            return [];
+        }
+    }
+
+    function saveGuests(guests) {
+        try {
+            localStorage.setItem(GUEST_KEY, JSON.stringify(guests));
+        } catch (err) {
+            /* storage unavailable — ignore */
+        }
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function timeAgo(ts) {
+        const s = Math.floor((Date.now() - ts) / 1000);
+        if (s < 60) return 'baru saja';
+        if (s < 3600) return `${Math.floor(s / 60)} menit lalu`;
+        if (s < 86400) return `${Math.floor(s / 3600)} jam lalu`;
+        return `${Math.floor(s / 86400)} hari lalu`;
+    }
+
+    function renderGuests() {
+        if (!list) return;
+        const guests = loadGuests();
+        if (countEl) countEl.textContent = guests.length;
+
+        if (!guests.length) {
+            list.innerHTML = '<p class="guest-empty">Belum ada pesan. Jadi yang pertama!</p>';
+            return;
+        }
+
+        list.innerHTML = guests
+            .slice()
+            .reverse()
+            .map((g) => `
+                <div class="guest-bubble">
+                    <p class="g-name">${escapeHtml(g.name)}</p>
+                    <p class="g-msg">${escapeHtml(g.msg)}</p>
+                    <p class="g-time">${timeAgo(g.ts)}</p>
+                </div>
+            `)
+            .join('');
+    }
+
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = (nameInput.value || '').trim();
+            const msg = (msgInput.value || '').trim();
+            if (!name || !msg) return;
+
+            const guests = loadGuests();
+            guests.push({ name, msg, ts: Date.now() });
+            saveGuests(guests);
+            form.reset();
+            renderGuests();
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Hapus semua pesan guestbook?')) {
+                saveGuests([]);
+                renderGuests();
+            }
+        });
+    }
+
+    renderGuests();
+})();

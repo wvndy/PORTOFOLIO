@@ -4,17 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swandy Sianturi</title>
-    <!-- Modern Font equivalent to what was used in the video (Inter/Plus Jakarta Sans) -->
+    <title>Swandy Sianturi — Web Developer</title>
+    <meta name="description" content="Portofolio Swandy Sianturi, mahasiswa Teknik Informatika Polibatam. Web & mobile developer.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Font Awesome for Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bangers&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Using Tailwind CSS via CDN for rapid styling to match the video's aesthetic -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,294 +18,361 @@
                 extend: {
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        comic: ['"Bangers"', 'cursive'],
                     },
                     colors: {
-                        brand: {
-                            purple: '#8B5CF6',
-                            blue: '#3B82F6',
-                            dark: '#030014', // Deep space dark
-                            card: 'rgba(255, 255, 255, 0.03)',
-                            border: 'rgba(255, 255, 255, 0.08)'
+                        spider: {
+                            red: '#E62429',
+                            darkred: '#A81219',
+                            blue: '#1A4C8B',
+                            lblue: '#2B6CB0',
+                            yellow: '#FFD23F',
+                            ink: '#0B0E1A',
+                            web: '#F5F5F5',
                         }
-                    },
-                    backgroundImage: {
-                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
                     }
                 }
             }
         }
     </script>
-
     <link rel="stylesheet" href="style.css">
-
-    <!-- ES Module Script for Three.js -->
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-        }
-      }
-    </script>
 </head>
 
-<body class="bg-brand-dark text-white antialiased overflow-x-hidden selection:bg-brand-purple selection:text-white">
+<body class="bg-spider-ink text-white antialiased overflow-x-hidden selection:bg-spider-red selection:text-white">
 
-    <!-- 3D Background Canvas -->
-    <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-80"></canvas>
+    <!-- Background canvas: web particles -->
+    <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-90"></canvas>
 
-    <!-- Custom Mouse Glow Tracker -->
+    <!-- Halftone + glow overlay -->
+    <div class="fixed inset-0 pointer-events-none -z-[5] halftone-overlay"></div>
+
+    <!-- Custom cursor -->
     <div id="cursor-dot" class="hidden md:block"></div>
     <div id="cursor-ring" class="hidden md:block"></div>
     <div id="cursor-glow" class="hidden md:block"></div>
 
-    <!-- Glowing Background Effect (Stars background overlay) -->
-    <div class="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-[5]">
-        <div class="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-brand-purple/20 blur-[120px]">
-        </div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-brand-blue/10 blur-[150px]">
-        </div>
+    <!-- Web-sling scroll spider -->
+    <div id="scroll-spider" class="hidden md:flex" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="30" height="30" fill="currentColor">
+            <ellipse cx="24" cy="20" rx="7" ry="6" />
+            <ellipse cx="24" cy="31" rx="10" ry="9" />
+            <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
+        </svg>
     </div>
 
-    <!-- Main Content wrapper -->
     <main class="relative z-10 container mx-auto px-6 py-12 md:py-24 max-w-6xl">
 
         <!-- Navbar -->
-        <nav
-            class="fixed top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl z-50 glass-effect border border-brand-border rounded-full px-6 py-4 flex justify-between items-center reveal-anim">
-            <a href="#"
-                class="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-                My<span class="text-white">Portofolio</span>
+        <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-11/12 max-w-4xl z-50 comic-nav reveal-anim">
+            <a href="#hero" class="flex items-center gap-2 font-comic text-2xl tracking-wide">
+                <svg viewBox="0 0 48 48" width="26" height="26" fill="#E62429" class="drop-shadow">
+                    <ellipse cx="24" cy="20" rx="7" ry="6" />
+                    <ellipse cx="24" cy="31" rx="10" ry="9" />
+                    <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="#E62429" stroke-width="2.6" fill="none" stroke-linecap="round" />
+                </svg>
+                <span class="text-white">SWAN<span class="text-spider-red">DY</span></span>
             </a>
-            <ul class="hidden md:flex gap-8 text-sm font-medium text-gray-300">
-                <li><a href="#hero" class="hover:text-white transition-colors">Home</a></li>
-                <li><a href="#about" class="hover:text-white transition-colors">About</a></li>
-                <li><a href="#projects" class="hover:text-white transition-colors">Projects</a></li>
-                <li><a href="#contact" class="hover:text-white transition-colors">Contact</a></li>
+            <ul class="hidden md:flex gap-7 text-sm font-semibold text-gray-300">
+                <li><a href="#hero" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#journey" class="nav-link">Journey</a></li>
+                <li><a href="#guestbook" class="nav-link">Guestbook</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <a href="#contact"
-                class="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-all hover:scale-105 active:scale-95 border border-white/10">Let's
-                Talk</a>
+            <a href="#contact" class="comic-btn comic-btn--sm hidden md:inline-flex">Hire Me</a>
+            <button id="nav-burger" class="md:hidden text-2xl text-white" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </nav>
 
-        <!-- Hero Section -->
-        <section id="hero" class="min-h-[90vh] flex flex-col justify-center items-start pt-20">
-            <div class="max-w-3xl reveal-anim">
-                <div
-                    class="inline-block px-4 py-2 rounded-full border border-brand-purple/30 bg-brand-purple/10 text-brand-purple text-sm font-medium mb-6 backdrop-blur-md">
-                    Selamat Datang di Website Saya
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="mobile-menu comic-panel">
+            <a href="#hero" class="mobile-link">Home</a>
+            <a href="#about" class="mobile-link">About</a>
+            <a href="#projects" class="mobile-link">Projects</a>
+            <a href="#journey" class="mobile-link">Journey</a>
+            <a href="#guestbook" class="mobile-link">Guestbook</a>
+            <a href="#contact" class="mobile-link">Contact</a>
+        </div>
+
+        <!-- Hero -->
+        <section id="hero" class="min-h-[92vh] flex flex-col justify-center items-start pt-24 relative">
+            <div class="max-w-3xl reveal-anim relative z-10">
+                <div class="comic-badge mb-7">
+                    <span class="w-2.5 h-2.5 rounded-full bg-spider-red animate-pulse"></span>
+                    OPEN TO WORK
                 </div>
-                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
-                    Hi, I'm <br class="hidden md:block" />
-                    <span
-                        class="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 glow-text inline-block">Swandy
-                        Sianturi</span>
+                <h1 class="font-comic text-6xl md:text-8xl leading-[0.9] tracking-wide mb-5">
+                    HI, I'M <span class="comic-title">SWANDY<br>SIANTURI</span>
                 </h1>
-                <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed">
-                    I am an early semester student in the Department of Informatics Engineering and the Software
-                    Engineering Technology Study Program at Batam State Polytechnic
+                <p class="text-lg md:text-xl text-gray-300 mb-4 max-w-2xl leading-relaxed">
+                    Mahasiswa Teknik Informatika &amp; Teknologi Rekayasa Perangkat Lunak
+                    di Politeknik Negeri Batam. Bikin website yang cepat, rapi, dan hidup.
                 </p>
+                <div class="flex flex-wrap gap-3 mb-9">
+                    <span class="tech-badge">Web Developer</span>
+                    <span class="tech-badge">Mobile</span>
+                    <span class="tech-badge">UI/UX</span>
+                    <span class="tech-badge">Based in Batam, ID</span>
+                </div>
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#projects"
-                        class="px-8 py-4 rounded-full bg-gradient-to-r from-brand-purple to-blue-600 text-white font-semibold flex items-center justify-center hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-all hover:-translate-y-1">
-                        View My Work <span class="ml-2">→</span>
+                    <a href="#projects" class="comic-btn">
+                        Lihat Karya <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#contact" class="comic-btn comic-btn--ghost">
+                        Hubungi Saya
                     </a>
                 </div>
             </div>
 
-            <!-- 3D Placeholder for floating astronaut (will be handled by Three.js on right side on desktop) -->
-            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-full hidden lg:block pointer-events-none">
-                <!-- Renders in canvas -->
+            <!-- Hanging spider -->
+            <div class="hero-spider" aria-hidden="true">
+                <div class="thread"></div>
+                <svg viewBox="0 0 120 120" width="110" height="110" fill="#E62429" class="spider-bob">
+                    <ellipse cx="60" cy="44" rx="15" ry="13" />
+                    <ellipse cx="60" cy="72" rx="22" ry="20" />
+                    <ellipse cx="60" cy="78" rx="9" ry="11" fill="#A81219" />
+                    <path d="M47 38 L20 16 M50 33 L34 6 M73 33 L86 6 M70 38 L100 16 M39 68 L8 58 M37 76 L5 80 M83 76 L115 80 M81 68 L112 58" stroke="#E62429" stroke-width="5" fill="none" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <div class="scroll-hint reveal-anim">
+                <span>SCROLL</span>
+                <i class="fa-solid fa-chevron-down"></i>
             </div>
         </section>
 
-        <!-- Bento Grid Layout System (Like Aceternity UI/Magic UI) -->
+        <!-- About -->
         <section id="about" class="py-20">
-            <div class="mb-12 text-center reveal-anim">
-                <h2 class="text-3xl md:text-5xl font-bold mb-4">Crafting digital <span
-                        class="text-purple-400">masterpieces</span></h2>
-                <p class="text-gray-400">A glimpse into my skills, background, and tools.</p>
+            <div class="section-head reveal-anim">
+                <span class="comic-kicker">THWIP!</span>
+                <h2 class="font-comic text-5xl md:text-6xl">ABOUT <span class="text-spider-red">ME</span></h2>
+                <p class="text-gray-400 mt-2">Sekilas tentang skill, latar belakang, dan tools yang kupakai.</p>
             </div>
 
-            <!-- Bento Grid Wrapper -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
-
-                <!-- Card 1: Main Bio (Spans 2 columns) -->
-                <div
-                    class="bento-card md:col-span-2 reveal-anim p-8 flex flex-col justify-between group overflow-hidden relative">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-br from-brand-purple/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(240px,auto)]">
+                <!-- Bio -->
+                <div class="comic-card md:col-span-2 reveal-anim p-8 flex flex-col justify-between group">
+                    <div class="corner-halftone"></div>
+                    <div class="w-12 h-12 rounded-xl bg-spider-red/20 border-2 border-spider-red/50 flex items-center justify-center mb-6">
+                        <svg viewBox="0 0 48 48" width="26" height="26" fill="#E62429">
+                            <ellipse cx="24" cy="20" rx="7" ry="6" />
+                            <ellipse cx="24" cy="31" rx="10" ry="9" />
+                            <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="#E62429" stroke-width="2.6" fill="none" stroke-linecap="round" />
+                        </svg>
                     </div>
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-6">
-                            🌌
-                        </div>
-                        <h3 class="text-2xl font-bold mb-3">About Me</h3>
-                        <p class="text-gray-400 leading-relaxed">I am a passionate developer focusing on building web
-                            applications with an edge. I love working with React, Three.js, and modern CSS frameworks to
-                            create pixel-perfect, performant UIs that feel alive.</p>
-                    </div>
-                </div>
-
-                <!-- Card 2: Tech Stack / Icon Cloud -->
-                <div
-                    class="bento-card reveal-anim p-8 flex flex-col justify-between items-center text-center group relative overflow-hidden">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    </div>
-                    <h3 class="text-xl font-bold mb-6 w-full text-left">Tech Stack</h3>
-                    <div class="flex flex-wrap gap-2 justify-center">
-                        <span class="tech-badge">React</span>
-                        <span class="tech-badge">Three.js</span>
-                        <span class="tech-badge">Tailwind</span>
-                        <span class="tech-badge">Node.js</span>
+                    <h3 class="font-comic text-3xl mb-3">THE STORY</h3>
+                    <p class="text-gray-300 leading-relaxed">Aku developer yang fokus bikin aplikasi web dengan "gigit". Suka bekerja dengan PHP, Laravel, JavaScript, dan modern CSS untuk menciptakan UI yang pixel-perfect dan terasa hidup. Percaya bahwa kode yang baik itu rapi, cepat, dan gampang dirawat.</p>
+                    <div class="flex flex-wrap gap-2 mt-6">
+                        <span class="tech-badge">PHP</span>
+                        <span class="tech-badge">Laravel</span>
+                        <span class="tech-badge">JavaScript</span>
+                        <span class="tech-badge">MySQL</span>
                         <span class="tech-badge">Figma</span>
-                        <span class="tech-badge">Next.js</span>
                     </div>
                 </div>
 
-                <!-- Card 3: Experience -->
-                <div class="bento-card reveal-anim p-8 flex flex-col justify-center group relative overflow-hidden">
-                    <h3
-                        class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-2">
-                        1+</h3>
-                    <p class="text-lg font-semibold text-gray-300">Years of Code</p>
-                    <p class="text-sm text-gray-500 mt-2">Constantly learning and evolving with the web.</p>
+                <!-- Experience -->
+                <div class="comic-card reveal-anim delay-100 p-8 flex flex-col justify-center items-start group">
+                    <div class="corner-halftone corner-halftone--br"></div>
+                    <i class="fa-solid fa-code text-3xl text-spider-red mb-4"></i>
+                    <h3 class="font-comic text-6xl text-spider-red comic-title">1+</h3>
+                    <p class="text-lg font-semibold text-gray-200">Years of Code</p>
+                    <p class="text-sm text-gray-400 mt-2">Terus belajar dan berkembang bareng web.</p>
                 </div>
 
-                <!-- Card 4: Location/Timezone (Spans 2 columns on desktop) -->
-                <div class="bento-card md:col-span-2 reveal-anim p-0 relative overflow-hidden group">
-                    <!-- Map background placeholder -->
-                    <div
-                        class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center opacity-30 group-hover:opacity-40 transition-opacity grayscale group-hover:grayscale-0">
+                <!-- Location -->
+                <div class="comic-card md:col-span-2 reveal-anim p-8 relative overflow-hidden flex flex-col justify-center group">
+                    <div class="map-glow"></div>
+                    <div class="flex items-center gap-3 mb-2 relative z-10">
+                        <span class="w-3 h-3 rounded-full bg-green-400 animate-pulse"></span>
+                        <span class="text-sm font-bold text-green-400 tracking-widest uppercase">Available for work</span>
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#030014] via-[#030014]/60 to-transparent"></div>
-
-                    <div class="absolute bottom-0 left-0 p-8 w-full z-10">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="w-3 h-3 rounded-full bg-green-400 animate-pulse"></span>
-                            <span class="text-sm font-medium text-green-400 tracking-wider uppercase">Available for
-                                work</span>
-                        </div>
-                        <h3 class="text-2xl font-bold">Based in Indonesia</h3>
-                        <p class="text-gray-400 mt-1">Working with clients worldwide.</p>
-                    </div>
+                    <h3 class="font-comic text-4xl relative z-10">BASED IN <span class="text-spider-blue">BATAM</span>, INDONESIA</h3>
+                    <p class="text-gray-400 mt-2 relative z-10">Bekerja dengan klien dari mana saja.</p>
                 </div>
-
             </div>
         </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="py-24 border-t border-brand-border/50">
-            <div class="mb-16 text-center reveal-anim">
-                <h2 class="text-3xl md:text-5xl font-bold mb-4">Featured <span class="text-blue-400">Work</span></h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">A selection of recent projects built with cutting-edge
-                    technologies.</p>
+        <!-- Projects -->
+        <section id="projects" class="py-24">
+            <div class="section-head reveal-anim">
+                <span class="comic-kicker comic-kicker--blue">BAM!</span>
+                <h2 class="font-comic text-5xl md:text-6xl">FEATURED <span class="text-spider-blue">WORK</span></h2>
+                <p class="text-gray-400 mt-2 max-w-2xl">Sebagian proyek yang kubangun dengan teknologi modern.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Project 1 -->
-                <article class="bento-card p-4 group reveal-anim">
-                    <div
-                        class="w-full h-64 rounded-2xl bg-gradient-to-br from-purple-900/50 to-blue-900/50 mb-6 relative overflow-hidden flex items-center justify-center">
-                        <div
-                            class="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors duration-500">
-                        </div>
-                        <span class="text-5xl group-hover:scale-110 transition-transform duration-500"><img
-                                src="AJUK.png" alt="AJUK"></span>
+                <article class="comic-card p-4 group reveal-anim">
+                    <div class="project-thumb bg-gradient-to-br from-spider-darkred/60 to-spider-blue/60">
+                        <img src="AJUK.png" alt="Aplikasi Pengajuan Dokumen Warga Digital">
                     </div>
-                    <div class="px-4 pb-4">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="text-2xl font-bold group-hover:text-purple-400 transition-colors"> Aplikasi
-                                Website Pengajuan Dokumen Warga Digital</h3>
-                            <a href="#"
-                                class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/20 transition-colors">↗</a>
+                    <div class="px-3 pb-3 pt-5">
+                        <div class="flex justify-between items-start gap-4 mb-3">
+                            <h3 class="font-comic text-3xl group-hover:text-spider-red transition-colors leading-tight">Pengajuan Dokumen Warga Digital</h3>
+                            <a href="#" class="comic-icon-btn" aria-label="Detail">↗</a>
                         </div>
-                        <p class="text-gray-400 mb-4 line-clamp-2">Website pengajuan dokumen warga secara digital.</p>
-                        <div class="flex gap-2">
-                            <span class="text-xs px-2 py-1 rounded bg-white/5 border border-white/10">HTML</span>
-                            <span class="text-xs px-2 py-1 rounded bg-white/5 border border-white/10">CSS</span>
-                            <span class="text-xs px-2 py-1 rounded bg-white/5 border border-white/10">PHP</span>
+                        <p class="text-gray-400 mb-4 leading-relaxed">Website pengajuan dokumen warga secara digital.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tag">HTML</span>
+                            <span class="tag">CSS</span>
+                            <span class="tag">PHP</span>
                         </div>
                     </div>
                 </article>
 
-                <!-- Project 2 -->
-                <article class="bento-card p-4 group reveal-anim delay-100">
-                    <div
-                        class="w-full h-64 rounded-2xl bg-gradient-to-br from-indigo-900/50 to-emerald-900/50 mb-6 relative overflow-hidden flex items-center justify-center">
-                        <div
-                            class="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors duration-500">
-                        </div>
-                        <span class="text-5xl group-hover:scale-110 transition-transform duration-500"><img src ="handrmv.png" alt="handrmv"</span>
+                <article class="comic-card p-4 group reveal-anim delay-100">
+                    <div class="project-thumb bg-gradient-to-br from-spider-blue/60 to-spider-lblue/60">
+                        <img src="handrmv.png" alt="AR Hand Draw Detector">
                     </div>
-                    <div class="px-4 pb-4">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="text-2xl font-bold group-hover:text-emerald-400 transition-colors">AR HAND DRAW DETECTOR</h3>
-                            <a href="#"
-                                class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/20 transition-colors">↗</a>
+                    <div class="px-3 pb-3 pt-5">
+                        <div class="flex justify-between items-start gap-4 mb-3">
+                            <h3 class="font-comic text-3xl group-hover:text-spider-red transition-colors leading-tight">AR Hand Draw Detector</h3>
+                            <a href="#" class="comic-icon-btn" aria-label="Detail">↗</a>
                         </div>
-                        <p class="text-gray-400 mb-4 line-clamp-2">"A cutting-edge AR Drawing that uses Computer Vision to allow users to paint in digital space using hand gestures"</p>
-                        <div class="flex gap-2">
-                            <span class="text-xs px-2 py-1 rounded bg-white/5 border border-white/10">HTML</span>
-                            <span class="text-xs px-2 py-1 rounded bg-white/5 border border-white/10">CSS</span>
+                        <p class="text-gray-400 mb-4 leading-relaxed">AR drawing dengan computer vision yang memungkinkan user menggambar di ruang digital lewat gerakan tangan.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tag">HTML</span>
+                            <span class="tag">CSS</span>
+                            <span class="tag">Computer Vision</span>
                         </div>
                     </div>
                 </article>
             </div>
         </section>
 
-        <!-- CTA / Contact Section -->
+        <!-- Journey -->
+        <section id="journey" class="py-24">
+            <div class="section-head reveal-anim">
+                <span class="comic-kicker comic-kicker--yellow">ZAP!</span>
+                <h2 class="font-comic text-5xl md:text-6xl">MY <span class="text-spider-yellow">JOURNEY</span></h2>
+                <p class="text-gray-400 mt-2">Jejak langkah dari lab kampus sampai proyek nyata.</p>
+            </div>
+
+            <div class="web-timeline">
+                <article class="web-node reveal-anim">
+                    <div class="web-node-dot"></div>
+                    <div class="comic-card web-node-card">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <span class="year-tag">2024 — Sekarang</span>
+                            <span class="role-tag role-tag--red">Mhs. Aktif</span>
+                        </div>
+                        <h3 class="font-comic text-2xl mb-2">Politeknik Negeri Batam</h3>
+                        <p class="text-gray-400 leading-relaxed">Departemen Teknik Informatika, Program Studi Teknologi Rekayasa Perangkat Lunak. Menekuni software engineering, database, dan pengembangan web.</p>
+                    </div>
+                </article>
+
+                <article class="web-node reveal-anim delay-100">
+                    <div class="web-node-dot"></div>
+                    <div class="comic-card web-node-card">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <span class="year-tag">Proyek</span>
+                            <span class="role-tag role-tag--blue">Team Lead</span>
+                        </div>
+                        <h3 class="font-comic text-2xl mb-2">Pengajuan Dokumen Warga Digital</h3>
+                        <p class="text-gray-400 leading-relaxed">Merancang dan membangun sistem pengajuan dokumen warga digital untuk mempercepat proses administrasi dan mengurangi kesalahan manual.</p>
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <span class="tag">PHP</span>
+                            <span class="tag">MySQL</span>
+                            <span class="tag">Bootstrap</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="web-node reveal-anim delay-200">
+                    <div class="web-node-dot"></div>
+                    <div class="comic-card web-node-card">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <span class="year-tag">Eksperimen</span>
+                            <span class="role-tag role-tag--yellow">R&amp;D</span>
+                        </div>
+                        <h3 class="font-comic text-2xl mb-2">AR Hand Draw Detector</h3>
+                        <p class="text-gray-400 leading-relaxed">Mengeksplorasi computer vision dan augmented reality untuk menggambar di ruang digital melalui gesture tangan.</p>
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <span class="tag">JS</span>
+                            <span class="tag">CV</span>
+                            <span class="tag">AR</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Guestbook -->
+        <section id="guestbook" class="py-24">
+            <div class="section-head reveal-anim">
+                <span class="comic-kicker comic-kicker--blue">POW!</span>
+                <h2 class="font-comic text-5xl md:text-6xl">GUEST<span class="text-spider-blue">BOOK</span></h2>
+                <p class="text-gray-400 mt-2">Tinggalkan jejak atau pesan. Tersimpan di browser ini.</p>
+            </div>
+
+            <div class="comic-card p-6 md:p-8 reveal-anim">
+                <form id="guest-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <input id="guest-name" type="text" maxlength="30" placeholder="Nama kamu" class="comic-input" required>
+                    <input id="guest-msg" type="text" maxlength="140" placeholder="Pesan singkat..." class="comic-input md:col-span-2" required>
+                    <button type="submit" class="comic-btn md:col-span-2 justify-center">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Kirim Pesan
+                    </button>
+                </form>
+
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-sm text-gray-400">Total pesan: <span id="guest-count" class="font-bold text-spider-red">0</span></p>
+                    <button id="guest-clear" class="text-xs text-gray-500 hover:text-spider-red transition-colors">Hapus semua</button>
+                </div>
+
+                <div id="guest-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+        </section>
+
+        <!-- Contact -->
         <section id="contact" class="py-24 mb-10">
-            <div class="bento-card p-12 md:p-20 text-center relative overflow-hidden reveal-anim border-purple-500/20">
-                <div class="absolute -top-40 -right-40 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px]"></div>
-                <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px]"></div>
-
-                <h2 class="text-4xl md:text-6xl font-bold mb-6 relative z-10">Ready to build <br /> something <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Interesting?</span>
+            <div class="comic-card contact-card p-12 md:p-20 text-center relative overflow-hidden reveal-anim">
+                <div class="contact-glow contact-glow--red"></div>
+                <div class="contact-glow contact-glow--blue"></div>
+                <span class="comic-kicker comic-kicker--yellow">KABOOM!</span>
+                <h2 class="font-comic text-5xl md:text-7xl mb-4 relative z-10 leading-tight">
+                    LET'S BUILD SOMETHING <span class="text-spider-red">WEB-TASTIC</span>
                 </h2>
-                <p class="text-xl text-gray-400 mb-10 max-w-2xl mx-auto relative z-10">Hit me up to discuss your project
-                    idea or just to say hello.</p>
+                <p class="text-lg text-gray-300 mb-10 max-w-2xl mx-auto relative z-10">Mau kerja sama atau sekadar menyapa? Kirim pesan, aku siap.</p>
 
-                <div class="flex flex-wrap justify-center gap-6 relative z-10">
-                    <a href="mailto:swandyxtry@gmail.com"
-                        class="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-brand-purple/50 transition-all hover:-translate-y-1">
-                        <i
-                            class="fa-solid fa-envelope text-2xl text-brand-purple group-hover:scale-110 transition-transform"></i>
-                        <span class="font-medium">Email</span>
+                <div class="flex flex-wrap justify-center gap-5 relative z-10">
+                    <a href="mailto:swandyxtry@gmail.com" class="social-btn">
+                        <i class="fa-solid fa-envelope text-2xl text-spider-red"></i>
+                        <span class="font-semibold">Email</span>
                     </a>
-                    <a href="https://www.instagram.com/classicalwan?igsh=c2s5eTkwaTZ0bXJ6&utm_source=qr" target="_blank"
-                        class="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-pink-500/50 transition-all hover:-translate-y-1">
-                        <i
-                            class="fa-brands fa-instagram text-2xl text-pink-500 group-hover:scale-110 transition-transform"></i>
-                        <span class="font-medium">Instagram</span>
+                    <a href="https://www.instagram.com/classicalwan?igsh=c2s5eTkwaTZ0bXJ6&utm_source=qr" target="_blank" rel="noopener" class="social-btn">
+                        <i class="fa-brands fa-instagram text-2xl text-pink-500"></i>
+                        <span class="font-semibold">Instagram</span>
                     </a>
-                    <a href="https://www.linkedin.com/in/swandy-sianturi-935255312?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
-                        target="_blank"
-                        class="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/50 transition-all hover:-translate-y-1">
-                        <i
-                            class="fa-brands fa-linkedin text-2xl text-blue-500 group-hover:scale-110 transition-transform"></i>
-                        <span class="font-medium">LinkedIn</span>
+                    <a href="https://www.linkedin.com/in/swandy-sianturi-935255312" target="_blank" rel="noopener" class="social-btn">
+                        <i class="fa-brands fa-linkedin text-2xl text-spider-lblue"></i>
+                        <span class="font-semibold">LinkedIn</span>
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- Minimal Footer -->
-        <footer class="py-8 text-center border-t border-brand-border/50 text-gray-500 text-sm">
-            <p>© 2026 Swandy Sianturi. All Right Reserved.</p>
+        <footer class="py-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 Swandy Sianturi. All Rights Reserved.</p>
         </footer>
     </main>
 
-    <!-- AI Chatbot Widget -->
-    <button id="chat-toggle" class="chat-toggle glass-effect" aria-label="Buka chat">
+    <!-- Chatbot -->
+    <button id="chat-toggle" class="chat-toggle" aria-label="Buka chat">
         <i class="fa-solid fa-comment-dots"></i>
     </button>
 
-    <div id="chat-panel" class="chat-panel glass-effect">
+    <div id="chat-panel" class="chat-panel">
         <div class="chat-header">
             <div class="flex items-center gap-3">
-                <span class="chat-avatar"><i class="fa-solid fa-robot"></i></span>
+                <span class="chat-avatar">
+                    <svg viewBox="0 0 48 48" width="22" height="22" fill="#fff">
+                        <ellipse cx="24" cy="20" rx="7" ry="6" />
+                        <ellipse cx="24" cy="31" rx="10" ry="9" />
+                        <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" />
+                    </svg>
+                </span>
                 <div class="text-left">
                     <p class="font-semibold leading-tight">Asisten Swandy</p>
                     <p class="text-xs text-green-400 flex items-center gap-1">
@@ -339,137 +401,8 @@
         </form>
     </div>
 
-    <!-- Vanilla Javascript Logic -->
     <script type="module" src="main.js"></script>
     <script src="chat.js"></script>
-    <script>
-        // Vanilla Re-creation of Framer Motion style scroll animations
-        document.addEventListener('DOMContentLoaded', () => {
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
-
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target); // Only animate once
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.reveal-anim').forEach((el) => {
-                observer.observe(el);
-            });
-
-            // Card Tilt Effect & Mouse Tracking for Glow (Vanilla JS alternative to react-parallax-tilt)
-            const cards = document.querySelectorAll('.bento-card');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-
-                    // Set CSS variables for the glow effect
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
-
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-
-                    const rotateX = ((y - centerY) / centerY) * -3; // Max 3deg tilt
-                    const rotateY = ((x - centerX) / centerX) * 3;
-
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                });
-            });
-
-            // Global Custom Cursor Logic
-            const cursorDot = document.getElementById('cursor-dot');
-            const cursorRing = document.getElementById('cursor-ring');
-            const cursorGlow = document.getElementById('cursor-glow');
-
-            let mouseX = window.innerWidth / 2;
-            let mouseY = window.innerHeight / 2;
-            let ringX = mouseX;
-            let ringY = mouseY;
-
-            // Trail logic
-            const trailCount = 12;
-            const trails = [];
-            for (let i = 0; i < trailCount; i++) {
-                const trail = document.createElement('div');
-                trail.className = 'cursor-trail';
-                document.body.appendChild(trail);
-                trails.push({ el: trail, x: mouseX, y: mouseY });
-            }
-
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-
-                if (cursorDot) {
-                    cursorDot.style.left = `${mouseX}px`;
-                    cursorDot.style.top = `${mouseY}px`;
-                }
-                if (cursorGlow) {
-                    cursorGlow.style.left = `${mouseX}px`;
-                    cursorGlow.style.top = `${mouseY}px`;
-                }
-            });
-
-            // Click Supernova Effect
-            document.addEventListener('click', (e) => {
-                const supernova = document.createElement('div');
-                supernova.className = 'click-effect';
-                supernova.style.left = `${e.clientX}px`;
-                supernova.style.top = `${e.clientY}px`;
-                document.body.appendChild(supernova);
-                setTimeout(() => supernova.remove(), 700);
-            });
-
-            // Smooth following animation
-            const animateCursor = () => {
-                // Ring follow
-                ringX += (mouseX - ringX) * 0.15;
-                ringY += (mouseY - ringY) * 0.15;
-                if (cursorRing) {
-                    cursorRing.style.left = `${ringX}px`;
-                    cursorRing.style.top = `${ringY}px`;
-                }
-
-                // Trails follow with staggering
-                let lastX = mouseX;
-                let lastY = mouseY;
-                trails.forEach((trail, index) => {
-                    trail.x += (lastX - trail.x) * (0.3 + index * 0.02);
-                    trail.y += (lastY - trail.y) * (0.3 + index * 0.02);
-                    trail.el.style.left = `${trail.x}px`;
-                    trail.el.style.top = `${trail.y}px`;
-                    trail.el.style.opacity = (1 - (index / trailCount)) * 0.6;
-                    trail.el.style.transform = `translate(-50%, -50%) scale(${1 - (index / trailCount)})`;
-                    lastX = trail.x;
-                    lastY = trail.y;
-                });
-
-                requestAnimationFrame(animateCursor);
-            };
-            animateCursor();
-
-            // Hover state for interactive elements
-            const interactables = document.querySelectorAll('a, button, .bento-card');
-            interactables.forEach(el => {
-                el.addEventListener('mouseenter', () => document.body.classList.add('hovering-link'));
-                el.addEventListener('mouseleave', () => document.body.classList.remove('hovering-link'));
-            });
-        });
-    </script>
 </body>
 
 </html>
