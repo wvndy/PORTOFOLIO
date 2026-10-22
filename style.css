@@ -445,20 +445,21 @@ body {
 }
 
 /* ---------- Reveal animations ---------- */
-/* Visible by default. Hidden only after the inline head script adds
-   .js-ready, and an inline safety net reveals everything after 3.5s
-   even if the main script never runs. */
+/* Content is ALWAYS visible. The entrance animation only plays when the
+   observer adds .visible, so a failed/stale script can never blank the page. */
 .reveal-anim { opacity: 1; transform: none; }
 
-html.js-ready .reveal-anim {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+@keyframes revealUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-html.js-ready .reveal-anim.visible { opacity: 1; transform: translateY(0); }
 
-.delay-100 { transition-delay: 100ms; }
-.delay-200 { transition-delay: 200ms; }
+html.js-ready .reveal-anim.visible {
+    animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.delay-100 { animation-delay: 100ms !important; }
+.delay-200 { animation-delay: 200ms !important; }
 
 /* ---------- Cursor ---------- */
 canvas#bg-canvas {
@@ -788,7 +789,8 @@ body.hovering-link #cursor-ring {
 
 @media (prefers-reduced-motion: reduce) {
     .spider-bob, .chat-toggle, .scroll-hint i { animation: none !important; }
-    .reveal-anim, html.js-ready .reveal-anim {
+    .reveal-anim, html.js-ready .reveal-anim.visible {
+        animation: none !important;
         transition: none !important;
         opacity: 1 !important;
         transform: none !important;

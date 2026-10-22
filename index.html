@@ -35,18 +35,11 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="style.css?v=20261022e">
+    <link rel="stylesheet" href="style.css?v=20261022f">
     <script>
-        // Progressive enhancement: hide reveal content only when JS is alive.
+        // Enables the entrance animation. Content is visible by default in CSS,
+        // so a stale/failed script can never leave the page blank.
         document.documentElement.classList.add('js-ready');
-        // Safety net: guarantee all content becomes visible, even if observer fails.
-        window.addEventListener('load', function () {
-            setTimeout(function () {
-                document.querySelectorAll('.reveal-anim').forEach(function (el) {
-                    el.classList.add('visible');
-                });
-            }, 3500);
-        });
     </script>
 </head>
 
@@ -413,8 +406,8 @@
         </form>
     </div>
 
-    <script type="module" src="main.js?v=20261022e"></script>
-    <script src="chat.js?v=20261022e"></script>
+    <script type="module" src="main.js?v=20261022f"></script>
+    <script src="chat.js?v=20261022f"></script>
 </body>
 
 </html>

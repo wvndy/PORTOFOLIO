@@ -163,8 +163,6 @@
         }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
 
         revealEls.forEach((el) => revealObserver.observe(el));
-        // Safety net: guarantee no content stays hidden, even if observer misbehaves.
-        setTimeout(revealAll, 3500);
     } else {
         revealAll();
     }
