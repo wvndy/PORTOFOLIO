@@ -35,19 +35,17 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="style.css?v=20261022b">
+    <link rel="stylesheet" href="style.css?v=20261022c">
     <script>
         // Progressive enhancement: hide reveal content only when JS is alive.
         document.documentElement.classList.add('js-ready');
-        // Safety net: if scroll-reveal never fires at all, force everything visible.
+        // Safety net: guarantee all content becomes visible, even if observer fails.
         window.addEventListener('load', function () {
             setTimeout(function () {
-                if (!document.querySelector('.reveal-anim.visible')) {
-                    document.querySelectorAll('.reveal-anim').forEach(function (el) {
-                        el.classList.add('visible');
-                    });
-                }
-            }, 2600);
+                document.querySelectorAll('.reveal-anim').forEach(function (el) {
+                    el.classList.add('visible');
+                });
+            }, 3500);
         });
     </script>
 </head>
@@ -415,8 +413,8 @@
         </form>
     </div>
 
-    <script type="module" src="main.js?v=20261022b"></script>
-    <script src="chat.js?v=20261022b"></script>
+    <script type="module" src="main.js?v=20261022c"></script>
+    <script src="chat.js?v=20261022c"></script>
 </body>
 
 </html>

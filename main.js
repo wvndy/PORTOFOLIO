@@ -163,10 +163,8 @@
         }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
 
         revealEls.forEach((el) => revealObserver.observe(el));
-        // Safety net: only if the observer failed to reveal anything.
-        setTimeout(() => {
-            if (!document.querySelector('.reveal-anim.visible')) revealAll();
-        }, 2600);
+        // Safety net: guarantee no content stays hidden, even if observer misbehaves.
+        setTimeout(revealAll, 3500);
     } else {
         revealAll();
     }
