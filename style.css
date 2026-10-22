@@ -445,20 +445,21 @@ body {
 }
 
 /* ---------- Reveal animations ---------- */
-/* Progressive enhancement: content visible by default.
-   Only hidden once JS confirms it is available (html.js-ready). */
-.reveal-anim {
-    opacity: 1;
-    transform: none;
+/* Content is ALWAYS visible by default. Animation only plays when the
+   observer adds .visible — if JS fails, nothing is ever hidden. */
+.reveal-anim { opacity: 1; transform: none; }
+
+@keyframes revealUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-html.js-ready .reveal-anim {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+
+html.js-ready .reveal-anim.visible {
+    animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-html.js-ready .reveal-anim.visible { opacity: 1; transform: translateY(0); }
-.delay-100 { transition-delay: 100ms; }
-.delay-200 { transition-delay: 200ms; }
+
+.delay-100 { animation-delay: 100ms !important; }
+.delay-200 { animation-delay: 200ms !important; }
 
 /* ---------- Cursor ---------- */
 canvas#bg-canvas {
@@ -788,5 +789,9 @@ body.hovering-link #cursor-ring {
 
 @media (prefers-reduced-motion: reduce) {
     .spider-bob, .chat-toggle, .scroll-hint i { animation: none !important; }
-    .reveal-anim { transition: none; opacity: 1; transform: none; }
+    .reveal-anim, html.js-ready .reveal-anim.visible {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+    }
 }
