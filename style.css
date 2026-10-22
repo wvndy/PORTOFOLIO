@@ -445,12 +445,18 @@ body {
 }
 
 /* ---------- Reveal animations ---------- */
+/* Progressive enhancement: content visible by default.
+   Only hidden once JS confirms it is available (html.js-ready). */
 .reveal-anim {
+    opacity: 1;
+    transform: none;
+}
+html.js-ready .reveal-anim {
     opacity: 0;
     transform: translateY(40px);
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.reveal-anim.visible { opacity: 1; transform: translateY(0); }
+html.js-ready .reveal-anim.visible { opacity: 1; transform: translateY(0); }
 .delay-100 { transition-delay: 100ms; }
 .delay-200 { transition-delay: 200ms; }
 

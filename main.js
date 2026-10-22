@@ -146,16 +146,30 @@
     /* -----------------------------------------------------
        2. Reveal on scroll
        ----------------------------------------------------- */
-    const revealObserver = new IntersectionObserver((entries, obs) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                obs.unobserve(entry.target);
-            }
-        });
-    }, { rootMargin: '0px', threshold: 0.1 });
+    const revealEls = document.querySelectorAll('.reveal-anim');
 
-    document.querySelectorAll('.reveal-anim').forEach((el) => revealObserver.observe(el));
+    function revealAll() {
+        revealEls.forEach((el) => el.classList.add('visible'));
+    }
+
+    if ('IntersectionObserver' in window && !reduceMotion) {
+        const revealObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+        revealEls.forEach((el) => revealObserver.observe(el));
+        // Safety net: only if the observer failed to reveal anything.
+        setTimeout(() => {
+            if (!document.querySelector('.reveal-anim.visible')) revealAll();
+        }, 2600);
+    } else {
+        revealAll();
+    }
 
     /* -----------------------------------------------------
        3. Card tilt + hover glow
