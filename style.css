@@ -1204,8 +1204,180 @@ body.hovering-link #cursor-ring {
 .chat-send:hover:not(:disabled) { transform: scale(1.08); }
 .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* ---------- Mascot ---------- */
+/* A small reactive companion pinned to the bottom-left. The .mascot wrapper
+   handles positioning; .mascot-body is the character (black pill with eyes).
+   State is driven by data-state on the wrapper (idle/sleep/wave/excited/search)
+   plus the accessory/zzz/exc/wave sub-elements toggled by mascot.js. */
+.mascot {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    width: 58px;
+    height: 58px;
+    z-index: 880;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    animation: mascotIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1s both;
+}
+
+.mascot-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border: 1.5px solid transparent;
+    border-radius: 20px 20px 12px 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(230, 36, 41, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+}
+.mascot:hover .mascot-body {
+    transform: scale(1.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 0 2px rgba(230, 36, 41, 0.55);
+}
+/* A subtle red glow while the mascot is "excited". */
+.mascot[data-state="excited"] .mascot-body {
+    box-shadow: 0 0 0 2px rgba(230, 36, 41, 0.9), 0 0 22px rgba(230, 36, 41, 0.6);
+}
+
+.mascot-eyes-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 4px 4px 0;
+    gap: 4px;
+    position: relative;
+    z-index: 20;
+}
+.mascot-eye {
+    width: 8px;
+    height: 12px;
+    background: #fff;
+    border-radius: 9999px;
+    transition: transform 0.12s ease, height 0.1s ease;
+    transform: translate(0, 0);
+    transform-origin: center;
+}
+/* Blink: flatten the eyes. */
+.mascot.is-blinking .mascot-eye { height: 2px; }
+/* Sleeping: eyes closed (thin), gently. */
+.mascot[data-state="sleep"] .mascot-eye { height: 2px; }
+
+/* z z z — sleeping */
+.mascot-zzz {
+    position: absolute;
+    top: -22px;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 30;
+}
+.mascot-zzz .mascot-z { color: #fff; font-weight: 900; line-height: 1; }
+.mascot-zzz .mascot-z--sm {
+    font-size: 10px;
+    opacity: 0.7;
+    margin-bottom: -4px;
+    animation: mascotZPulse 1.4s ease-in-out infinite;
+}
+.mascot-zzz .mascot-z--lg {
+    font-size: 14px;
+    animation: mascotZBounce 1.1s ease-in-out infinite;
+}
+.mascot[data-state="sleep"] .mascot-zzz { display: flex; }
+
+/* ! — excited */
+.mascot-exc {
+    position: absolute;
+    top: -18px;
+    right: 0;
+    color: #fff;
+    font-weight: 900;
+    font-size: 18px;
+    z-index: 30;
+    display: none;
+    animation: mascotExc 0.5s ease-in-out infinite alternate;
+}
+.mascot[data-state="excited"] .mascot-exc { display: block; }
+
+/* waving hand */
+.mascot-wave {
+    position: absolute;
+    top: -12px;
+    right: -16px;
+    z-index: 40;
+    font-size: 18px;
+    pointer-events: none;
+    display: none;
+    transform-origin: center bottom;
+    animation: mascotWave 0.4s ease-in-out infinite alternate;
+}
+.mascot[data-state="wave"] .mascot-wave { display: block; }
+
+/* accessory: magnifying glass (search) */
+.mascot-acc {
+    position: absolute;
+    inset: 0;
+    display: none;
+    z-index: 30;
+}
+.mascot[data-state="search"] .mascot-acc { display: block; }
+.mascot-acc-stem {
+    position: absolute;
+    top: 40%;
+    right: -4px;
+    width: 12px;
+    height: 3px;
+    background: #fff;
+    border-radius: 9999px;
+    transform-origin: left center;
+    transform: rotate(-45deg);
+    z-index: 30;
+}
+.mascot-acc-glass {
+    position: absolute;
+    top: -4px;
+    right: -16px;
+    color: #fff;
+    transform: rotate(12deg);
+    z-index: 40;
+    animation: mascotScan 1.6s ease-in-out infinite;
+}
+.mascot-acc-glass svg { width: 14px; height: 14px; display: block; }
+
+@keyframes mascotIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.6); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes mascotWave {
+    from { transform: rotate(-14deg); }
+    to   { transform: rotate(16deg); }
+}
+@keyframes mascotExc {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(-3px) scale(1.15); }
+}
+@keyframes mascotZPulse {
+    0%, 100% { opacity: 0.7; }
+    50%      { opacity: 0.25; }
+}
+@keyframes mascotZBounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-4px); }
+}
+@keyframes mascotScan {
+    0%, 100% { transform: rotate(12deg) translate(0, 0); }
+    50%      { transform: rotate(2deg) translate(-2px, 2px); }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
+    .mascot { left: 16px; bottom: 16px; width: 50px; height: 50px; }
     .hero-spider { right: -10px; transform: scale(0.7); }
     .web-timeline { padding-left: 34px; }
     .web-node-dot { left: -34px; }
@@ -1223,7 +1395,8 @@ body.hovering-link #cursor-ring {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .spider-bob, .chat-toggle, .scroll-hint i, .hero-medallion, .guest-fab { animation: none !important; }
+    .spider-bob, .chat-toggle, .scroll-hint i, .hero-medallion, .guest-fab,
+    .mascot, .mascot-wave, .mascot-exc, .mascot-zzz .mascot-z, .mascot-acc-glass { animation: none !important; }
     .reveal-anim, html.js-ready .reveal-anim.visible {
         animation: none !important;
         transition: none !important;

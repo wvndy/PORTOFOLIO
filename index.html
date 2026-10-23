@@ -35,7 +35,7 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="style.css?v=20261023a">
+    <link rel="stylesheet" href="style.css?v=20261024b">
     <script>
         // Enables the entrance animation. Content is visible by default in CSS,
         // so a stale/failed script can never leave the page blank.
@@ -358,6 +358,42 @@
         </footer>
     </main>
 
+    <!-- Mascot: a small reactive character in the bottom-left corner.
+         Reacts to the cursor with eye-tracking, blinks, sleeps when idle,
+         waves on hover, gets excited on click, and "searches" the page. -->
+    <div id="mascot" class="mascot" aria-hidden="true" data-state="idle">
+        <div class="mascot-body">
+            <div class="mascot-eyes-container">
+                <div class="mascot-eye" data-eye-l></div>
+                <div class="mascot-eye" data-eye-r></div>
+            </div>
+
+            <!-- sleeping -->
+            <div class="mascot-zzz" data-zzz>
+                <span class="mascot-z mascot-z--sm">z</span>
+                <span class="mascot-z mascot-z--lg">Z</span>
+            </div>
+
+            <!-- excited -->
+            <div class="mascot-exc" data-exc>!</div>
+
+            <!-- waving hand -->
+            <div class="mascot-wave" data-wave>🖐️</div>
+
+            <!-- accessory: magnifying glass (search mode) -->
+            <div class="mascot-acc" data-acc>
+                <div class="mascot-acc-stem"></div>
+                <div class="mascot-acc-glass">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m21 21-4.34-4.34"></path>
+                        <circle cx="11" cy="11" r="8"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Guestbook floating button -->
     <button id="guestbook-toggle" class="guest-fab" type="button" aria-label="Buka buku tamu" aria-controls="guestbook-drawer" aria-expanded="false">
         <span class="guest-fab-icon" aria-hidden="true">
@@ -478,10 +514,11 @@
         </form>
     </div>
 
-    <script src="supabase-config.js?v=20261023a"></script>
-    <script type="module" src="main.js?v=20261023a"></script>
-    <script src="chat.js?v=20261023a"></script>
-    <script type="module" src="guestbook.js?v=20261023a"></script>
+    <script src="supabase-config.js?v=20261024b"></script>
+    <script type="module" src="main.js?v=20261024b"></script>
+    <script src="chat.js?v=20261024b"></script>
+    <script type="module" src="guestbook.js?v=20261024b"></script>
+    <script src="mascot.js?v=20261024b"></script>
 </body>
 
 </html>
