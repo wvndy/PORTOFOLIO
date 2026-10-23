@@ -55,6 +55,7 @@ function openChat() {
     chatPanel.classList.add('open');
     chatToggle.classList.add('active');
     chatToggle.innerHTML = ICON_CLOSE;
+    document.body.classList.add('chat-open');
     setTimeout(() => chatInput.focus(), 250);
 }
 
@@ -62,6 +63,7 @@ function closeChat() {
     chatPanel.classList.remove('open');
     chatToggle.classList.remove('active');
     chatToggle.innerHTML = ICON_CHAT;
+    document.body.classList.remove('chat-open');
 }
 
 chatToggle.addEventListener('click', () => {
@@ -155,3 +157,6 @@ document.querySelectorAll('.chat-suggest').forEach((btn) => {
 });
 
 addMessage('Hai! Saya asisten virtual Swandy. Tanya apa saja soal portofolio, proyek, atau cara menghubungi dia.', 'bot');
+
+// Close chat when guestbook opens
+window.addEventListener('guestbook:open', closeChat);

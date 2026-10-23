@@ -35,7 +35,7 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="style.css?v=20261022f">
+    <link rel="stylesheet" href="style.css?v=20261023a">
     <script>
         // Enables the entrance animation. Content is visible by default in CSS,
         // so a stale/failed script can never leave the page blank.
@@ -82,7 +82,7 @@
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#projects" class="nav-link">Projects</a></li>
                 <li><a href="#journey" class="nav-link">Journey</a></li>
-                <li><a href="#guestbook" class="nav-link">Guestbook</a></li>
+                <li><a href="#guestbook" class="nav-link" data-open-guestbook>Guestbook</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <a href="#contact" class="comic-btn comic-btn--sm hidden md:inline-flex">Hire Me</a>
@@ -97,12 +97,30 @@
             <a href="#about" class="mobile-link">About</a>
             <a href="#projects" class="mobile-link">Projects</a>
             <a href="#journey" class="mobile-link">Journey</a>
-            <a href="#guestbook" class="mobile-link">Guestbook</a>
+            <a href="#guestbook" class="mobile-link" data-open-guestbook>Guestbook</a>
             <a href="#contact" class="mobile-link">Contact</a>
         </div>
 
         <!-- Hero -->
         <section id="hero" class="min-h-[92vh] flex flex-col justify-center items-start pt-24 relative">
+            <!-- 2 spider medallions -->
+            <div class="hero-medallions" aria-hidden="true">
+                <span class="hero-medallion hero-medallion--red">
+                    <svg viewBox="0 0 48 48" fill="currentColor">
+                        <ellipse cx="24" cy="20" rx="7" ry="6" />
+                        <ellipse cx="24" cy="31" rx="10" ry="9" />
+                        <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
+                    </svg>
+                </span>
+                <span class="hero-medallion hero-medallion--blue">
+                    <svg viewBox="0 0 48 48" fill="currentColor">
+                        <ellipse cx="24" cy="20" rx="7" ry="6" />
+                        <ellipse cx="24" cy="31" rx="10" ry="9" />
+                        <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
+                    </svg>
+                </span>
+            </div>
+
             <div class="max-w-3xl reveal-anim relative z-10">
                 <div class="comic-badge mb-7">
                     <span class="w-2.5 h-2.5 rounded-full bg-spider-red animate-pulse"></span>
@@ -304,31 +322,8 @@
             </div>
         </section>
 
-        <!-- Guestbook -->
-        <section id="guestbook" class="py-24">
-            <div class="section-head reveal-anim">
-                <span class="comic-kicker comic-kicker--blue">POW!</span>
-                <h2 class="font-comic text-5xl md:text-6xl">GUEST<span class="text-spider-blue">BOOK</span></h2>
-                <p class="text-gray-400 mt-2">Tinggalkan jejak atau pesan. Tersimpan di browser ini.</p>
-            </div>
-
-            <div class="comic-card p-6 md:p-8 reveal-anim">
-                <form id="guest-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    <input id="guest-name" type="text" maxlength="30" placeholder="Nama kamu" class="comic-input" required>
-                    <input id="guest-msg" type="text" maxlength="140" placeholder="Pesan singkat..." class="comic-input md:col-span-2" required>
-                    <button type="submit" class="comic-btn md:col-span-2 justify-center">
-                        <i class="fa-solid fa-paper-plane mr-2"></i> Kirim Pesan
-                    </button>
-                </form>
-
-                <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm text-gray-400">Total pesan: <span id="guest-count" class="font-bold text-spider-red">0</span></p>
-                    <button id="guest-clear" class="text-xs text-gray-500 hover:text-spider-red transition-colors">Hapus semua</button>
-                </div>
-
-                <div id="guest-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-            </div>
-        </section>
+        <!-- Guestbook opens in a drawer; anchor kept for nav fallback -->
+        <div id="guestbook" class="sr-only" aria-hidden="true"></div>
 
         <!-- Contact -->
         <section id="contact" class="py-24 mb-10">
@@ -362,6 +357,83 @@
             <p>&copy; 2026 Swandy Sianturi. All Rights Reserved.</p>
         </footer>
     </main>
+
+    <!-- Guestbook floating button -->
+    <button id="guestbook-toggle" class="guest-fab" type="button" aria-label="Buka buku tamu" aria-controls="guestbook-drawer" aria-expanded="false">
+        <span class="guest-fab-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="currentColor">
+                <ellipse cx="24" cy="20" rx="7" ry="6" />
+                <ellipse cx="24" cy="31" rx="10" ry="9" />
+                <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
+            </svg>
+        </span>
+        <span class="guest-fab-label">Buku Tamu</span>
+        <span id="guestbook-fab-count" class="guest-fab-count" aria-live="polite">0</span>
+    </button>
+
+    <!-- Guestbook drawer -->
+    <div id="guestbook-overlay" class="guestbook-overlay" aria-hidden="true"></div>
+
+    <aside id="guestbook-drawer" class="guestbook-drawer" role="dialog" aria-modal="true" aria-labelledby="guestbook-title" aria-hidden="true" inert>
+        <header class="gb-header">
+            <div class="gb-brand">
+                <span class="gb-brand-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="currentColor">
+                        <ellipse cx="24" cy="20" rx="7" ry="6" />
+                        <ellipse cx="24" cy="31" rx="10" ry="9" />
+                        <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
+                    </svg>
+                </span>
+                <div>
+                    <h2 id="guestbook-title" class="gb-title">BUKU <span>TAMU</span></h2>
+                    <p class="gb-subtitle">~/guestbook.log</p>
+                </div>
+            </div>
+            <div class="gb-header-right">
+                <span id="guestbook-mode" class="gb-mode gb-mode--preview">PREVIEW</span>
+                <span class="gb-count-pill"><span id="guestbook-header-count">0</span> pesan</span>
+                <button id="guestbook-close" class="gb-close" type="button" aria-label="Tutup buku tamu">
+                    <span class="gb-close-esc">ESC</span>
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="guestbook-toast" class="gb-toast" role="status" aria-live="polite"></div>
+        <div id="guestbook-notice" class="gb-notice" hidden></div>
+        <div id="guestbook-auth" class="gb-auth"></div>
+
+        <div id="guestbook-list" class="gb-list" aria-live="polite">
+            <div class="gb-state">
+                <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+                <span>Memuat pesan...</span>
+            </div>
+        </div>
+
+        <div id="guestbook-locked" class="gb-locked">
+            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+            <p>Login dengan GitHub atau Google untuk meninggalkan pesan.</p>
+        </div>
+
+        <form id="guestbook-form" class="gb-composer" hidden>
+            <div id="guestbook-reply-bar" class="gb-reply-bar" hidden>
+                <span>Membalas <strong id="guestbook-reply-name"></strong></span>
+                <button id="guestbook-reply-cancel" type="button" aria-label="Batal membalas">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="gb-composer-row">
+                <textarea id="guestbook-message" class="gb-textarea" rows="2" maxlength="280" placeholder="Tulis pesan atau jejakmu..." aria-label="Pesan buku tamu"></textarea>
+                <button id="guestbook-send" class="gb-send" type="submit" aria-label="Kirim pesan">
+                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="gb-composer-foot">
+                <span id="guestbook-counter" class="gb-counter">280 karakter tersisa</span>
+                <span class="gb-hint">Ctrl+Enter untuk kirim</span>
+            </div>
+        </form>
+    </aside>
 
     <!-- Chatbot -->
     <button id="chat-toggle" class="chat-toggle" aria-label="Buka chat">
@@ -406,8 +478,10 @@
         </form>
     </div>
 
-    <script type="module" src="main.js?v=20261022f"></script>
-    <script src="chat.js?v=20261022f"></script>
+    <script src="supabase-config.js?v=20261023a"></script>
+    <script type="module" src="main.js?v=20261023a"></script>
+    <script src="chat.js?v=20261023a"></script>
+    <script type="module" src="guestbook.js?v=20261023a"></script>
 </body>
 
 </html>
