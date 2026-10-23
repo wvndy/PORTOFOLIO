@@ -14,8 +14,8 @@
          sebelum halaman di-paint pertama kali. Ini mencegah FOUC: tanpa ini
          Tailwind CDN meng-generate CSS saat runtime sehingga nav sempat
          tampil di posisi/tombol yang salah lalu "meloncat". -->
-    <link rel="stylesheet" href="tailwind.build.css?v=20261024c">
-    <link rel="stylesheet" href="style.css?v=20261024c">
+    <link rel="stylesheet" href="css/tailwind.build.css?v=20261024d">
+    <link rel="stylesheet" href="css/style.css?v=20261024d">
     <script>
         // Enables the entrance animation. Content is visible by default in CSS,
         // so a stale/failed script can never leave the page blank.
@@ -209,7 +209,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <article class="comic-card p-4 group reveal-anim">
                     <div class="project-thumb bg-gradient-to-br from-spider-darkred/60 to-spider-blue/60">
-                        <img src="AJUK.png" alt="Aplikasi Pengajuan Dokumen Warga Digital">
+                        <img src="assets/AJUK.png" alt="Aplikasi Pengajuan Dokumen Warga Digital">
                     </div>
                     <div class="px-3 pb-3 pt-5">
                         <div class="flex justify-between items-start gap-4 mb-3">
@@ -227,7 +227,7 @@
 
                 <article class="comic-card p-4 group reveal-anim delay-100">
                     <div class="project-thumb bg-gradient-to-br from-spider-blue/60 to-spider-lblue/60">
-                        <img src="handrmv.png" alt="AR Hand Draw Detector">
+                        <img src="assets/handrmv.png" alt="AR Hand Draw Detector">
                     </div>
                     <div class="px-3 pb-3 pt-5">
                         <div class="flex justify-between items-start gap-4 mb-3">
@@ -494,11 +494,11 @@
         </form>
     </div>
 
-    <script src="supabase-config.js?v=20261024c"></script>
-    <script type="module" src="main.js?v=20261024c"></script>
-    <script src="chat.js?v=20261024c"></script>
-    <script type="module" src="guestbook.js?v=20261024c"></script>
-    <script src="mascot.js?v=20261024c"></script>
+    <script src="js/supabase-config.js?v=20261024d"></script>
+    <script type="module" src="js/main.js?v=20261024d"></script>
+    <script src="js/chat.js?v=20261024d"></script>
+    <script type="module" src="js/guestbook.js?v=20261024d"></script>
+    <script src="js/mascot.js?v=20261024d"></script>
 </body>
 
 </html>
