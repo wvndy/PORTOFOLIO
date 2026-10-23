@@ -1,0 +1,13 @@
+{
+  "name": "portofolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portofolio Swandy Sianturi — static site with pre-built Tailwind CSS.",
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind/tailwind.config.js -i tailwind/input.css -o tailwind.build.css --minify",
+    "watch:css": "tailwindcss -c tailwind/tailwind.config.js -i tailwind/input.css -o tailwind.build.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

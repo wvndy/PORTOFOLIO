@@ -10,32 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bangers&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        comic: ['"Bangers"', 'cursive'],
-                    },
-                    colors: {
-                        spider: {
-                            red: '#E62429',
-                            darkred: '#A81219',
-                            blue: '#1A4C8B',
-                            lblue: '#2B6CB0',
-                            yellow: '#FFD23F',
-                            ink: '#0B0E1A',
-                            web: '#F5F5F5',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="stylesheet" href="style.css?v=20261024b">
+    <!-- Tailwind di-build statis (tailwind.build.css) supaya CSS sudah siap
+         sebelum halaman di-paint pertama kali. Ini mencegah FOUC: tanpa ini
+         Tailwind CDN meng-generate CSS saat runtime sehingga nav sempat
+         tampil di posisi/tombol yang salah lalu "meloncat". -->
+    <link rel="stylesheet" href="tailwind.build.css?v=20261024c">
+    <link rel="stylesheet" href="style.css?v=20261024c">
     <script>
         // Enables the entrance animation. Content is visible by default in CSS,
         // so a stale/failed script can never leave the page blank.
@@ -514,11 +494,11 @@
         </form>
     </div>
 
-    <script src="supabase-config.js?v=20261024b"></script>
-    <script type="module" src="main.js?v=20261024b"></script>
-    <script src="chat.js?v=20261024b"></script>
-    <script type="module" src="guestbook.js?v=20261024b"></script>
-    <script src="mascot.js?v=20261024b"></script>
+    <script src="supabase-config.js?v=20261024c"></script>
+    <script type="module" src="main.js?v=20261024c"></script>
+    <script src="chat.js?v=20261024c"></script>
+    <script type="module" src="guestbook.js?v=20261024c"></script>
+    <script src="mascot.js?v=20261024c"></script>
 </body>
 
 </html>
