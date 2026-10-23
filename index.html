@@ -35,7 +35,7 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="style.css?v=20261023a">
+    <link rel="stylesheet" href="style.css?v=20261024a">
     <script>
         // Enables the entrance animation. Content is visible by default in CSS,
         // so a stale/failed script can never leave the page blank.
@@ -56,14 +56,9 @@
     <div id="cursor-ring" class="hidden md:block"></div>
     <div id="cursor-glow" class="hidden md:block"></div>
 
-    <!-- Web-sling scroll spider -->
-    <div id="scroll-spider" class="hidden md:flex" aria-hidden="true">
-        <svg viewBox="0 0 48 48" width="30" height="30" fill="currentColor">
-            <ellipse cx="24" cy="20" rx="7" ry="6" />
-            <ellipse cx="24" cy="31" rx="10" ry="9" />
-            <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
-        </svg>
-    </div>
+    <!-- 3D crawling spider (procedural Three.js). Sits in a band across
+         the viewport and crawls left->right as you scroll. -->
+    <div id="spider3d-canvas" aria-hidden="true"></div>
 
     <main class="relative z-10 container mx-auto px-6 py-12 md:py-24 max-w-6xl">
 
@@ -478,10 +473,20 @@
         </form>
     </div>
 
-    <script src="supabase-config.js?v=20261023a"></script>
-    <script type="module" src="main.js?v=20261023a"></script>
-    <script src="chat.js?v=20261023a"></script>
-    <script type="module" src="guestbook.js?v=20261023a"></script>
+    <script src="supabase-config.js?v=20261024a"></script>
+    <script type="module" src="main.js?v=20261024a"></script>
+    <script src="chat.js?v=20261024a"></script>
+    <script type="module" src="guestbook.js?v=20261024a"></script>
+
+    <!-- 3D spider: Three.js from CDN (no build step). -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"
+            }
+        }
+    </script>
+    <script type="module" src="spider3d.js?v=20261024a"></script>
 </body>
 
 </html>

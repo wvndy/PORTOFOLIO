@@ -344,7 +344,7 @@ function renderAuth() {
     card.appendChild(head);
     card.appendChild(mk('p', 'gb-auth-desc', demoMode
         ? 'Login disimulasikan. Setelah Supabase dikonfigurasi, tombol ini membuka OAuth GitHub/Google asli.'
-        : 'Autentikasi lewat GitHub atau Google. Tidak ada spam, hanya koneksi nyata.'));
+        : 'Autentikasi lewat GitHub atau Google. Tidak ada spam cuma login.'));
 
     const buttons = mk('div', 'gb-auth-buttons');
     for (const provider of ['github', 'google']) {

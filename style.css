@@ -866,17 +866,32 @@ body.chat-open .guest-fab {
     box-shadow: 4px 4px 0 var(--ink);
 }
 
-/* ---------- Scroll spider ---------- */
-#scroll-spider {
+/* ---------- 3D crawling spider ---------- */
+/* A full-width band anchored to the bottom of the viewport. The WebGL
+   canvas lives here and the spider crawls across it as you scroll.
+   pointer-events:none so it never blocks clicks; z-index keeps it above
+   the page content but below the nav / chat / drawer layers. */
+#spider3d-canvas {
     position: fixed;
-    right: 14px;
-    top: 0;
-    color: var(--red);
-    z-index: 40;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 22vh;
+    min-height: 160px;
+    max-height: 260px;
+    z-index: 35;
     pointer-events: none;
-    filter: drop-shadow(0 0 8px rgba(230, 36, 41, 0.6));
-    transition: top 0.1s linear;
-    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    /* Soft glow so the dark model separates from the dark page. */
+    filter: drop-shadow(0 10px 30px rgba(230, 36, 41, 0.18));
+}
+#spider3d-canvas.is-ready { opacity: 1; }
+#spider3d-canvas canvas { display: block; width: 100% !important; height: 100% !important; }
+
+/* Keep the spider visually out of the way on phones/tablets. */
+@media (max-width: 899px), (pointer: coarse) {
+    #spider3d-canvas { display: none; }
 }
 
 /* ---------- Reveal animations ---------- */
