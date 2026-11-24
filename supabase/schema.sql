@@ -1,5 +1,5 @@
 -- =============================================================
--- Guestbook schema — Swandy Sianturi Portfolio
+-- Guestbook schema — Swandy Portfolio
 -- Jalankan seluruh isi file ini di SQL Editor Supabase:
 --   Dashboard → SQL Editor → New query → Paste → Run
 -- =============================================================

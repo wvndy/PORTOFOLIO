@@ -1,6 +1,6 @@
 # PORTOFOLIO
 
-Portofolio Swandy Sianturi — situs statis bertema komik Spider-Man.
+Portofolio Swandy — situs statis bertema komik Spider-Man.
 Ditulis dengan HTML + CSS + JavaScript vanilla, dengan Tailwind CSS yang
 di-build statis (tanpa CDN runtime) agar tidak ada FOUC saat halaman dimuat.
 

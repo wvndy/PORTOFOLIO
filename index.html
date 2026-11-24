@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swandy Sianturi &mdash; Web Developer</title>
-    <meta name="description" content="Portofolio Swandy Sianturi, mahasiswa Teknik Informatika Polibatam. Web & mobile developer.">
+    <title>Swandy &mdash; Web Developer</title>
+    <meta name="description" content="Portofolio Swandy, mahasiswa Teknik Informatika Polibatam. Web & mobile developer.">
     <meta name="theme-color" content="#0B0E1A">
     <!-- Favicon / ikon tab (gambar mask Spiderman) -->
     <link rel="icon" href="assets/favicon.ico" sizes="any">
@@ -66,7 +66,6 @@
             <ul class="hidden md:flex gap-7 text-sm font-semibold text-gray-300">
                 <li><a href="#hero" class="nav-link">Home</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
                 <li><a href="#journey" class="nav-link">Journey</a></li>
                 <li><a href="#guestbook" class="nav-link" data-open-guestbook>Guestbook</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -81,7 +80,6 @@
         <div id="mobile-menu" class="mobile-menu comic-panel">
             <a href="#hero" class="mobile-link">Home</a>
             <a href="#about" class="mobile-link">About</a>
-            <a href="#projects" class="mobile-link">Projects</a>
             <a href="#journey" class="mobile-link">Journey</a>
             <a href="#guestbook" class="mobile-link" data-open-guestbook>Guestbook</a>
             <a href="#contact" class="mobile-link">Contact</a>
@@ -113,7 +111,7 @@
                     OPEN TO WORK
                 </div>
                 <h1 class="font-comic text-6xl md:text-8xl leading-[0.9] tracking-wide mb-5">
-                    HI, I'M <span class="comic-title">SWANDY<br>SIANTURI</span>
+                    HI, I'M <span class="comic-title">SWANDY</span>
                 </h1>
                 <p class="text-lg md:text-xl text-gray-300 mb-4 max-w-2xl leading-relaxed">
                     Mahasiswa Teknik Informatika &amp; Teknologi Rekayasa Perangkat Lunak
@@ -126,9 +124,6 @@
                     <span class="tech-badge">Based in Batam, ID</span>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#projects" class="comic-btn">
-                        Lihat Karya <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </a>
                     <a href="#contact" class="comic-btn comic-btn--ghost">
                         Hubungi Saya
                     </a>
@@ -204,59 +199,12 @@
             </div>
         </section>
 
-        <!-- Projects -->
-        <section id="projects" class="py-24">
-            <div class="section-head reveal-anim">
-                <span class="comic-kicker comic-kicker--blue">BAM!</span>
-                <h2 class="font-comic text-5xl md:text-6xl">FEATURED <span class="text-spider-blue">WORK</span></h2>
-                <p class="text-gray-400 mt-2 max-w-2xl">Sebagian proyek yang kubangun dengan teknologi modern.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <article class="comic-card p-4 group reveal-anim">
-                    <div class="project-thumb bg-gradient-to-br from-spider-darkred/60 to-spider-blue/60">
-                        <img src="assets/AJUK.png" alt="Aplikasi Pengajuan Dokumen Warga Digital">
-                    </div>
-                    <div class="px-3 pb-3 pt-5">
-                        <div class="flex justify-between items-start gap-4 mb-3">
-                            <h3 class="font-comic text-3xl group-hover:text-spider-red transition-colors leading-tight">Pengajuan Dokumen Warga Digital</h3>
-                            <a href="#" class="comic-icon-btn" aria-label="Detail">&#x2197;</a>
-                        </div>
-                        <p class="text-gray-400 mb-4 leading-relaxed">Website pengajuan dokumen warga secara digital.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="tag">HTML</span>
-                            <span class="tag">CSS</span>
-                            <span class="tag">PHP</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="comic-card p-4 group reveal-anim delay-100">
-                    <div class="project-thumb bg-gradient-to-br from-spider-blue/60 to-spider-lblue/60">
-                        <img src="assets/handrmv.png" alt="AR Hand Draw Detector">
-                    </div>
-                    <div class="px-3 pb-3 pt-5">
-                        <div class="flex justify-between items-start gap-4 mb-3">
-                            <h3 class="font-comic text-3xl group-hover:text-spider-red transition-colors leading-tight">AR Hand Draw Detector</h3>
-                            <a href="#" class="comic-icon-btn" aria-label="Detail">&#x2197;</a>
-                        </div>
-                        <p class="text-gray-400 mb-4 leading-relaxed">AR drawing dengan computer vision yang memungkinkan user menggambar di ruang digital lewat gerakan tangan.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="tag">HTML</span>
-                            <span class="tag">CSS</span>
-                            <span class="tag">Computer Vision</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
         <!-- Journey -->
         <section id="journey" class="py-24">
             <div class="section-head reveal-anim">
                 <span class="comic-kicker comic-kicker--yellow">ZAP!</span>
                 <h2 class="font-comic text-5xl md:text-6xl">MY <span class="text-spider-yellow">JOURNEY</span></h2>
-                <p class="text-gray-400 mt-2">Jejak langkah dari lab kampus sampai proyek nyata.</p>
+                <p class="text-gray-400 mt-2">Jejak langkah di Politeknik Negeri Batam.</p>
             </div>
 
             <div class="web-timeline">
@@ -269,40 +217,6 @@
                         </div>
                         <h3 class="font-comic text-2xl mb-2">Politeknik Negeri Batam</h3>
                         <p class="text-gray-400 leading-relaxed">Departemen Teknik Informatika, Program Studi Teknologi Rekayasa Perangkat Lunak. Menekuni software engineering, database, dan pengembangan web.</p>
-                    </div>
-                </article>
-
-                <article class="web-node reveal-anim delay-100">
-                    <div class="web-node-dot"></div>
-                    <div class="comic-card web-node-card">
-                        <div class="flex items-center justify-between gap-3 mb-2">
-                            <span class="year-tag">Proyek</span>
-                            <span class="role-tag role-tag--blue">Team Lead</span>
-                        </div>
-                        <h3 class="font-comic text-2xl mb-2">Pengajuan Dokumen Warga Digital</h3>
-                        <p class="text-gray-400 leading-relaxed">Merancang dan membangun sistem pengajuan dokumen warga digital untuk mempercepat proses administrasi dan mengurangi kesalahan manual.</p>
-                        <div class="flex flex-wrap gap-2 mt-4">
-                            <span class="tag">PHP</span>
-                            <span class="tag">MySQL</span>
-                            <span class="tag">Bootstrap</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="web-node reveal-anim delay-200">
-                    <div class="web-node-dot"></div>
-                    <div class="comic-card web-node-card">
-                        <div class="flex items-center justify-between gap-3 mb-2">
-                            <span class="year-tag">Eksperimen</span>
-                            <span class="role-tag role-tag--yellow">R&amp;D</span>
-                        </div>
-                        <h3 class="font-comic text-2xl mb-2">AR Hand Draw Detector</h3>
-                        <p class="text-gray-400 leading-relaxed">Mengeksplorasi computer vision dan augmented reality untuk menggambar di ruang digital melalui gesture tangan.</p>
-                        <div class="flex flex-wrap gap-2 mt-4">
-                            <span class="tag">JS</span>
-                            <span class="tag">CV</span>
-                            <span class="tag">AR</span>
-                        </div>
                     </div>
                 </article>
             </div>
@@ -340,7 +254,7 @@
         </section>
 
         <footer class="py-8 text-center text-gray-500 text-sm">
-            <p>&copy; 2026 Swandy Sianturi. All Rights Reserved.</p>
+            <p>&copy; 2026 Swandy. All Rights Reserved.</p>
         </footer>
     </main>
 

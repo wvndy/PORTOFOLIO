@@ -1,5 +1,5 @@
 /**
- * guestbook.js — Swandy Sianturi Portfolio
+ * guestbook.js — Swandy Portfolio
  * Drawer-style guestbook with Supabase + GitHub/Google auth.
  * Falls back to localStorage demo mode if Supabase is not configured.
  */
