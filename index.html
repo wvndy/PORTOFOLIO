@@ -7,6 +7,28 @@
     <title>Swandy &mdash; Web Developer</title>
     <meta name="description" content="Portofolio Swandy, mahasiswa Teknik Informatika Polibatam. Web & mobile developer.">
     <meta name="theme-color" content="#0B0E1A">
+    <style>
+        html.site-loading,
+        html.site-loading body { overflow: hidden; }
+        #site-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #E62429;
+        }
+        #site-loader[hidden] { display: none !important; }
+    </style>
+    <noscript>
+        <style>
+            #site-loader { display: none !important; }
+            html.site-loading,
+            html.site-loading body { overflow: auto !important; }
+        </style>
+    </noscript>
+    <link rel="stylesheet" href="css/loader.css?v=20261124b">
     <!-- Favicon / ikon tab (gambar mask Spiderman) -->
     <link rel="icon" href="assets/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -21,7 +43,7 @@
          Tailwind CDN meng-generate CSS saat runtime sehingga nav sempat
          tampil di posisi/tombol yang salah lalu "meloncat". -->
     <link rel="stylesheet" href="css/tailwind.build.css?v=20261024d">
-    <link rel="stylesheet" href="css/style.css?v=20261024d">
+    <link rel="stylesheet" href="css/style.css?v=20261124b">
     <script>
         // Enables the entrance animation. Content is visible by default in CSS,
         // so a stale/failed script can never leave the page blank.
@@ -30,6 +52,42 @@
 </head>
 
 <body class="bg-spider-ink text-white antialiased overflow-x-hidden selection:bg-spider-red selection:text-white">
+
+    <!-- Site loader -->
+    <div id="site-loader" class="site-loader" role="status" aria-label="Memuat halaman">
+        <div class="site-loader__pattern" aria-hidden="true"></div>
+        <svg class="site-loader__web" viewBox="0 0 800 800" fill="none" aria-hidden="true">
+            <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <circle cx="400" cy="400" r="86" />
+                <circle cx="400" cy="400" r="172" />
+                <circle cx="400" cy="400" r="258" />
+                <circle cx="400" cy="400" r="344" />
+                <path d="M400 400 L400 0 M400 400 L600 54 M400 400 L746 200 M400 400 L800 400 M400 400 L746 600 M400 400 L600 746 M400 400 L400 800 M400 400 L200 746 M400 400 L54 600 M400 400 L0 400 M400 400 L54 200 M400 400 L200 54" />
+            </g>
+        </svg>
+        <div class="site-loader__inner">
+            <span class="site-loader__kicker">THWIP!</span>
+            <div class="site-loader__logo-panel">
+                <video id="site-loader-video" class="site-loader__video" src="assets/loader-logo.mp4" muted playsinline autoplay preload="auto" disablepictureinpicture aria-hidden="true"></video>
+                <span class="site-loader__fallback" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="currentColor">
+                        <ellipse cx="24" cy="20" rx="7" ry="6" />
+                        <ellipse cx="24" cy="31" rx="10" ry="9" />
+                        <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
+                    </svg>
+                </span>
+            </div>
+            <p class="site-loader__name">SWANDY</p>
+            <div class="site-loader__progress" role="progressbar" aria-label="Progres memuat" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span id="site-loader-bar" class="site-loader__bar"></span>
+            </div>
+            <p class="site-loader__meta">
+                <span id="site-loader-percent" class="site-loader__percent">0%</span>
+                <span class="site-loader__status">MEMUAT...</span>
+            </p>
+        </div>
+    </div>
+    <script src="js/loader.js?v=20261124a"></script>
 
     <!-- Background canvas: web particles -->
     <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-90"></canvas>

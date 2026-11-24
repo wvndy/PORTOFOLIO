@@ -11,16 +11,19 @@ PORTOFOLIO/
 ├── index.html              # Halaman utama (tetap di root)
 ├── css/
 │   ├── style.css           # Style utama (komik, komponen, animasi)
+│   ├── loader.css          # Loading screen komik (intro fullscreen)
 │   └── tailwind.build.css  # Hasil build Tailwind (auto-generate, jangan edit manual)
 ├── js/
 │   ├── main.js             # Interaksi: bg web canvas, cursor, reveal, menu
+│   ├── loader.js           # Progress load asli + kontrol loading screen
 │   ├── chat.js             # Chatbot (endpoint /api/chat -> chat.php)
 │   ├── guestbook.js        # Buku tamu (Supabase + mode demo localStorage)
 │   ├── mascot.js           # Mascot reaktif di pojok kiri bawah
 │   └── supabase-config.js  # Konfigurasi Supabase (URL + anon key)
 ├── assets/                 # Gambar & aset statis (tambah file baru di sini)
 │   ├── AJUK.png
-│   └── handrmv.png
+│   ├── handrmv.png
+│   └── loader-logo.mp4     # Video logo untuk loading screen
 ├── tailwind/
 │   ├── tailwind.config.js  # Konfigurasi Tailwind (warna, font, content)
 │   └── input.css           # Entry CSS Tailwind (@tailwind base/components/utilities)
