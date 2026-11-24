@@ -109,7 +109,7 @@ html.site-loading body {
 
 .site-loader__kicker {
     display: inline-block;
-    margin-bottom: clamp(14px, 2.8vh, 28px);
+    margin-bottom: clamp(12px, 2.2vh, 22px);
     padding: 4px 14px;
     color: var(--ld-ink);
     font-family: "Bangers", Impact, "Arial Black", sans-serif;
@@ -122,69 +122,29 @@ html.site-loading body {
     transform: rotate(-3deg);
 }
 
-.site-loader__logo-panel {
+.site-loader__emblem-wrap {
     position: relative;
-    width: min(76vw, 520px, 70vh);
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    background: var(--ld-ink);
-    border: 4px solid var(--ld-web);
-    box-shadow: 0 0 0 3px var(--ld-ink), 12px 12px 0 rgba(11, 14, 26, 0.6);
-    transform: rotate(-1.5deg);
-}
-
-.site-loader__video {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: var(--ld-ink);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-}
-
-.site-loader.is-video-ready .site-loader__video {
-    opacity: 1;
-}
-
-.site-loader__fallback {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--ld-red);
-    background:
-        radial-gradient(circle at 50% 50%, rgba(230, 36, 41, 0.16), transparent 62%),
-        var(--ld-ink);
-    opacity: 1;
-    transition: opacity 0.25s ease;
+    margin: 0 auto;
 }
 
-.site-loader.is-video-ready .site-loader__fallback {
-    opacity: 0;
-}
-
-.site-loader.is-video-error .site-loader__video {
-    display: none;
-}
-
-.site-loader.is-video-error .site-loader__fallback {
-    opacity: 1;
-}
-
-.site-loader__fallback svg {
-    width: clamp(72px, 16vw, 120px);
+.site-loader__icon {
+    width: clamp(140px, 22vw, 210px);
     height: auto;
-    filter: drop-shadow(0 0 18px rgba(230, 36, 41, 0.55));
-    animation: siteLoaderPulse 1.6s ease-in-out infinite;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 0 28px rgba(255, 255, 255, 0.45))
+            drop-shadow(6px 6px 0 rgba(11, 14, 26, 0.75));
+    user-select: none;
+    pointer-events: none;
+    animation: siteLoaderEmblemBob 3s ease-in-out infinite;
 }
 
 .site-loader__name {
-    margin: clamp(16px, 3.2vh, 30px) 0 0;
+    margin: clamp(14px, 2.6vh, 24px) 0 0;
     color: var(--ld-web);
     font-family: "Bangers", Impact, "Arial Black", sans-serif;
     font-size: clamp(2.2rem, 6vw, 3.6rem);
@@ -196,7 +156,7 @@ html.site-loading body {
 
 .site-loader__progress {
     position: relative;
-    width: min(76vw, 520px, 70vh);
+    width: min(78vw, 360px);
     height: 18px;
     margin-top: clamp(14px, 2.6vh, 24px);
     overflow: hidden;
@@ -264,9 +224,9 @@ html.site-loading body {
     to { transform: translate(-50%, -50%) rotate(352deg); }
 }
 
-@keyframes siteLoaderPulse {
-    0%, 100% { transform: scale(1); opacity: 0.85; }
-    50% { transform: scale(1.06); opacity: 1; }
+@keyframes siteLoaderEmblemBob {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50%      { transform: translateY(-7px) rotate(1deg); }
 }
 
 @keyframes siteLoaderStripes {
@@ -287,9 +247,12 @@ html.site-loading body {
         padding: 18px;
     }
 
-    .site-loader__logo-panel,
+    .site-loader__icon {
+        width: clamp(130px, 36vw, 175px);
+    }
+
     .site-loader__progress {
-        width: min(86vw, 460px);
+        width: min(84vw, 320px);
     }
 
     .site-loader__name {
@@ -302,8 +265,8 @@ html.site-loading body {
         display: none;
     }
 
-    .site-loader__logo-panel {
-        width: min(50vw, 360px, 60vh);
+    .site-loader__icon {
+        width: 110px;
     }
 
     .site-loader__name {
@@ -313,6 +276,7 @@ html.site-loading body {
 
     .site-loader__progress {
         margin-top: 10px;
+        width: min(70vw, 260px);
     }
 }
 

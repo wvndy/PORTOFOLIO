@@ -23,7 +23,7 @@ PORTOFOLIO/
 ├── assets/                 # Gambar & aset statis (tambah file baru di sini)
 │   ├── AJUK.png
 │   ├── handrmv.png
-│   └── loader-logo.mp4     # Video logo untuk loading screen
+│   └── loader-icon.webp    # Ikon animasi Spider-Man (transparan) untuk loading screen
 ├── tailwind/
 │   ├── tailwind.config.js  # Konfigurasi Tailwind (warna, font, content)
 │   └── input.css           # Entry CSS Tailwind (@tailwind base/components/utilities)

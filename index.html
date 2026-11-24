@@ -28,7 +28,7 @@
             html.site-loading body { overflow: auto !important; }
         </style>
     </noscript>
-    <link rel="stylesheet" href="css/loader.css?v=20261124b">
+    <link rel="stylesheet" href="css/loader.css?v=20261124c">
     <!-- Favicon / ikon tab (gambar mask Spiderman) -->
     <link rel="icon" href="assets/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -67,15 +67,8 @@
         </svg>
         <div class="site-loader__inner">
             <span class="site-loader__kicker">THWIP!</span>
-            <div class="site-loader__logo-panel">
-                <video id="site-loader-video" class="site-loader__video" src="assets/loader-logo.mp4" muted playsinline autoplay preload="auto" disablepictureinpicture aria-hidden="true"></video>
-                <span class="site-loader__fallback" aria-hidden="true">
-                    <svg viewBox="0 0 48 48" fill="currentColor">
-                        <ellipse cx="24" cy="20" rx="7" ry="6" />
-                        <ellipse cx="24" cy="31" rx="10" ry="9" />
-                        <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
-                    </svg>
-                </span>
+            <div class="site-loader__emblem-wrap">
+                <img id="site-loader-icon" class="site-loader__icon" src="assets/loader-icon.webp" alt="Logo Swandy" width="220" height="220" decoding="async">
             </div>
             <p class="site-loader__name">SWANDY</p>
             <div class="site-loader__progress" role="progressbar" aria-label="Progres memuat" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -87,7 +80,7 @@
             </p>
         </div>
     </div>
-    <script src="js/loader.js?v=20261124a"></script>
+    <script src="js/loader.js?v=20261124c"></script>
 
     <!-- Background canvas: web particles -->
     <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-90"></canvas>

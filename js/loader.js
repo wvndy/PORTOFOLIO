@@ -5,16 +5,16 @@
     if (!loader) return;
 
     const html = document.documentElement;
-    const video = document.getElementById('site-loader-video');
+    const icon = document.getElementById('site-loader-icon');
     const bar = document.getElementById('site-loader-bar');
     const percentEl = document.getElementById('site-loader-percent');
     const statusEl = loader.querySelector('.site-loader__status');
     const progressEl = loader.querySelector('.site-loader__progress');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const WEIGHTS = { dom: 15, load: 35, fonts: 20, videoReady: 10, videoEnded: 20 };
-    const MIN_VISIBLE = reduceMotion ? 800 : 2200;
-    const MAX_WAIT = 8000;
+    const WEIGHTS = { dom: 20, load: 40, fonts: 20, iconReady: 10, animDone: 10 };
+    const MIN_VISIBLE = reduceMotion ? 600 : 2100;
+    const MAX_WAIT = 7000;
 
     let shown = 0;
     let target = 0;
@@ -84,9 +84,6 @@
             shown = 100;
             target = 100;
             paint();
-            if (video) {
-                try { video.pause(); } catch (error) {}
-            }
             loader.classList.add('is-leaving');
             html.classList.add('js-ready');
             window.setTimeout(function () {
@@ -137,47 +134,18 @@
             mark('fonts');
         }
 
-        if (!video) {
-            mark('videoReady');
-            mark('videoEnded');
+        if (!icon || icon.complete) {
+            mark('iconReady');
         } else {
-            const videoReady = function () {
-                loader.classList.add('is-video-ready');
-                mark('videoReady');
-            };
+            icon.addEventListener('load', function () { mark('iconReady'); }, { once: true });
+            icon.addEventListener('error', function () { mark('iconReady'); }, { once: true });
+            window.setTimeout(function () { mark('iconReady'); }, 2500);
+        }
 
-            if (video.readyState >= 2) videoReady();
-            else video.addEventListener('loadeddata', videoReady, { once: true });
-
-            video.addEventListener('ended', function () {
-                loader.classList.add('is-video-ended');
-                mark('videoEnded');
-            }, { once: true });
-
-            video.addEventListener('error', function () {
-                loader.classList.add('is-video-error');
-                mark('videoReady');
-                mark('videoEnded');
-            }, { once: true });
-
-            if (reduceMotion) {
-                try { video.pause(); } catch (error) {}
-                mark('videoReady');
-                mark('videoEnded');
-            } else if (video.ended) {
-                videoReady();
-                mark('videoEnded');
-            } else {
-                const playAttempt = video.play();
-                if (playAttempt && typeof playAttempt.catch === 'function') {
-                    playAttempt.catch(function () {});
-                }
-                window.setTimeout(function () {
-                    loader.classList.add('is-video-ready');
-                    mark('videoReady');
-                }, 3500);
-                window.setTimeout(function () { mark('videoEnded'); }, 5000);
-            }
+        if (reduceMotion) {
+            mark('animDone');
+        } else {
+            window.setTimeout(function () { mark('animDone'); }, 2000);
         }
 
         window.addEventListener('pageshow', function (event) {
