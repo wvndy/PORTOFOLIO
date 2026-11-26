@@ -347,7 +347,6 @@
     };
 
     let targetPaletteIdx = 0;
-    let manualPaletteShift = 0; // for drag flick color shifts
 
     // State & physics
     let W = 0, H = 0;
@@ -447,11 +446,6 @@
         if (isDragging) {
             isDragging = false;
             waveImpulse = Math.min(waveImpulse + 0.5, 2.5);
-
-            // If dragged significantly across the screen, shift color palette pulse!
-            if (dragTotalDist > 0.18) {
-                manualPaletteShift = (manualPaletteShift + 1) % PALETTES.length;
-            }
         }
     }
 
@@ -508,10 +502,8 @@
         waveImpulse *= 0.94;
         if (waveImpulse < 0.001) waveImpulse = 0;
 
-        // Color Palette Interpolation
-        // Combine scroll-targeted palette with any manual drag shift
-        const activePaletteIdx = (targetPaletteIdx + manualPaletteShift) % PALETTES.length;
-        const targetPal = PALETTES[activePaletteIdx];
+        // Color Palette Interpolation — strictly tied to active section
+        const targetPal = PALETTES[targetPaletteIdx];
         const colorLerp = 0.05;
 
         for (let i = 0; i < 3; i++) {
