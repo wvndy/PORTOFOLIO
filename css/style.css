@@ -1270,7 +1270,7 @@ body.hovering-link #cursor-ring {
 .mascot {
     position: fixed;
     left: 24px;
-    bottom: 24px;
+    bottom: 30px;
     width: 58px;
     height: 58px;
     z-index: 880;
@@ -1278,6 +1278,51 @@ body.hovering-link #cursor-ring {
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     animation: mascotIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1s both;
+    will-change: translate;
+}
+
+/* Legs */
+.mascot-legs {
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 1;
+    pointer-events: none;
+}
+.mascot-leg {
+    width: 9px;
+    height: 13px;
+    background: #000;
+    border-radius: 3px 3px 6px 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    transform-origin: top center;
+}
+.mascot.is-running .mascot-leg--l {
+    animation: mascotLegStep 0.2s ease-in-out infinite alternate;
+}
+.mascot.is-running .mascot-leg--r {
+    animation: mascotLegStep 0.2s ease-in-out infinite alternate-reverse;
+}
+.mascot.is-running[data-dir="right"] .mascot-body {
+    animation: mascotRunBobRight 0.2s ease-in-out infinite alternate;
+}
+.mascot.is-running[data-dir="left"] .mascot-body {
+    animation: mascotRunBobLeft 0.2s ease-in-out infinite alternate;
+}
+@keyframes mascotLegStep {
+    from { transform: rotate(-32deg) translateY(0); }
+    to   { transform: rotate(32deg) translateY(-3px); }
+}
+@keyframes mascotRunBobRight {
+    from { transform: translateY(0) rotate(5deg); }
+    to   { transform: translateY(-4px) rotate(8deg); }
+}
+@keyframes mascotRunBobLeft {
+    from { transform: translateY(0) rotate(-5deg); }
+    to   { transform: translateY(-4px) rotate(-8deg); }
 }
 
 .mascot-body {

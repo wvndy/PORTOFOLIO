@@ -128,6 +128,80 @@
     }
 
     // ---------------------------------------------------------
+    // Run away left/right in sync with leg steps
+    // ---------------------------------------------------------
+    let offsetX = 0;
+    let returnTimer = null;
+    let stopStepTimer = null;
+    let fleeLockUntil = 0;
+
+    function moveHorizontalTo(nextX, durationMs) {
+        const dist = Math.abs(nextX - offsetX);
+        if (dist < 2) return;
+
+        const dir = nextX > offsetX ? 'right' : 'left';
+        offsetX = nextX;
+
+        mascot.dataset.dir = dir;
+        mascot.classList.add('is-running');
+        mascot.style.transition = `translate ${durationMs}ms linear`;
+        mascot.style.translate = `${nextX.toFixed(1)}px 0px`;
+
+        if (stopStepTimer) clearTimeout(stopStepTimer);
+        stopStepTimer = setTimeout(() => {
+            mascot.classList.remove('is-running');
+            delete mascot.dataset.dir;
+        }, durationMs);
+    }
+
+    function fleeFromCursor(clientX) {
+        if (reduceMotion) return;
+
+        const rect = mascot.getBoundingClientRect();
+        const baseLeft = rect.left - offsetX;
+        const pad = 20;
+        const minX = pad - baseLeft;
+        const maxX = Math.max(minX, window.innerWidth - pad - rect.width - baseLeft);
+
+        const cx = rect.left + rect.width / 2;
+        const goRight = typeof clientX === 'number' ? clientX < cx : Math.random() > 0.5;
+
+        const step = Math.min(260, Math.max(120, window.innerWidth * 0.28));
+        let nextX = goRight
+            ? Math.min(maxX, offsetX + step)
+            : Math.max(minX, offsetX - step);
+
+        // If cornered near an edge, run the opposite way
+        if (Math.abs(nextX - offsetX) < 55) {
+            nextX = goRight
+                ? Math.max(minX, offsetX - step * 0.75)
+                : Math.min(maxX, offsetX + step * 0.75);
+        }
+
+        // Sync duration with leg step cycle (~200ms per half-step -> ~300 px/sec)
+        const dist = Math.abs(nextX - offsetX);
+        const durationMs = Math.min(900, Math.max(320, Math.round(dist * 3.1)));
+        moveHorizontalTo(nextX, durationMs);
+
+        if (returnTimer) clearTimeout(returnTimer);
+        returnTimer = setTimeout(() => {
+            const backDist = Math.abs(offsetX);
+            const backMs = Math.min(1100, Math.max(360, Math.round(backDist * 3.4)));
+            moveHorizontalTo(0, backMs);
+        }, 4500);
+    }
+
+    window.addEventListener('resize', () => {
+        if (offsetX !== 0) {
+            offsetX = 0;
+            mascot.style.transition = 'none';
+            mascot.style.translate = '0px 0px';
+            mascot.classList.remove('is-running');
+            delete mascot.dataset.dir;
+        }
+    }, { passive: true });
+
+    // ---------------------------------------------------------
     // Pointer interaction
     // ---------------------------------------------------------
     function onEnter() {
@@ -139,22 +213,29 @@
         isHovering = false;
         if (state === 'wave') setState('idle');
     }
-    function onClick() {
+    function onClick(clientX) {
+        const now = Date.now();
+        if (now < fleeLockUntil) return;
+        fleeLockUntil = now + 80;
+
         setState('excited');
         if (excitedTimer) clearTimeout(excitedTimer);
         excitedTimer = setTimeout(() => {
             setState(isHovering ? 'wave' : 'idle');
         }, 1400);
+
+        fleeFromCursor(clientX);
         resetIdle();
     }
 
     mascot.addEventListener('mouseenter', onEnter);
     mascot.addEventListener('mouseleave', onLeave);
-    mascot.addEventListener('click', onClick);
+    mascot.addEventListener('click', (e) => onClick(e.clientX));
     // Touch: treat a tap like a poke.
     mascot.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        onClick();
+        const t = e.touches && e.touches[0];
+        onClick(t ? t.clientX : undefined);
     }, { passive: false });
 
     // ---------------------------------------------------------
