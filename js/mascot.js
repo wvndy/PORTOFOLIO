@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    Mascot — a small reactive character (bottom-left).
    Behaviors driven by data-state on #mascot:
      idle    — default, eyes follow the cursor

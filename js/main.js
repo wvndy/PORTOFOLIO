@@ -1,6 +1,7 @@
-/* =========================================================
+﻿/* =========================================================
    Spider-Man Comic Portfolio — interactions
-   Canvas 2D web network + cursor + guestbook + timeline
+   Lenis smooth scroll + Lando horizontal pinned sections
+   + mask text + page transition + cursor + mobile menu
    ========================================================= */
 
 (function () {
@@ -9,148 +10,83 @@
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /* -----------------------------------------------------
-       1. Background: web network on 2D canvas
+       1. Lenis Smooth Scroll
        ----------------------------------------------------- */
-    const canvas = document.getElementById('bg-canvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        let W, H, DPR;
-        let nodes = [];
-        let mouse = { x: -9999, y: -9999 };
-        let scrollY = 0;
-        let currentScroll = 0;
-
-        const RED = '230, 36, 41';
-        const BLUE = '43, 108, 176';
-
-        function resize() {
-            DPR = Math.min(window.devicePixelRatio || 1, 2);
-            W = window.innerWidth;
-            H = window.innerHeight;
-            canvas.width = W * DPR;
-            canvas.height = H * DPR;
-            canvas.style.width = W + 'px';
-            canvas.style.height = H + 'px';
-            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-            buildNodes();
-        }
-
-        function buildNodes() {
-            const count = Math.min(90, Math.floor((W * H) / 16000));
-            nodes = [];
-            for (let i = 0; i < count; i++) {
-                nodes.push({
-                    x: Math.random() * W,
-                    y: Math.random() * H,
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4,
-                    r: Math.random() * 1.8 + 0.8,
-                    c: Math.random() > 0.5 ? RED : BLUE
-                });
-            }
-        }
-
-        const MAX_DIST = 150;
-
-        function draw() {
-            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-            ctx.clearRect(0, 0, W, H);
-
-            currentScroll += (scrollY - currentScroll) * 0.1;
-            ctx.save();
-            ctx.translate(0, -currentScroll * 0.06);
-
-            for (const n of nodes) {
-                n.x += n.vx;
-                n.y += n.vy;
-
-                if (n.x < 0 || n.x > W) n.vx *= -1;
-                if (n.y < 0 || n.y > H) n.vy *= -1;
-
-                // gentle mouse repel
-                const mdx = n.x - mouse.x;
-                const mdy = n.y - mouse.y;
-                const md = Math.hypot(mdx, mdy);
-                if (md < 120 && md > 0) {
-                    const f = (120 - md) / 120;
-                    n.x += (mdx / md) * f * 1.2;
-                    n.y += (mdy / md) * f * 1.2;
-                }
-
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${n.c}, 0.7)`;
-                ctx.fill();
-            }
-
-            // draw web lines between nearby nodes
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const a = nodes[i];
-                    const b = nodes[j];
-                    const dx = a.x - b.x;
-                    const dy = a.y - b.y;
-                    const d = Math.hypot(dx, dy);
-                    if (d < MAX_DIST) {
-                        const alpha = (1 - d / MAX_DIST) * 0.28;
-                        ctx.strokeStyle = `rgba(${BLUE}, ${alpha})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(a.x, a.y);
-                        ctx.lineTo(b.x, b.y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // connect nodes to cursor (web catching)
-            for (const n of nodes) {
-                const d = Math.hypot(n.x - mouse.x, n.y - mouse.y);
-                if (d < 180) {
-                    const alpha = (1 - d / 180) * 0.45;
-                    ctx.strokeStyle = `rgba(${RED}, ${alpha})`;
-                    ctx.lineWidth = 1.2;
-                    ctx.beginPath();
-                    ctx.moveTo(n.x, n.y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    ctx.stroke();
-                }
-            }
-
-            ctx.restore();
-
-            requestAnimationFrame(draw);
-        }
-
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
+    let lenis = null;
+    if (typeof Lenis !== 'undefined' && !reduceMotion) {
+        lenis = new Lenis({
+            duration: 1.1,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true
         });
-        window.addEventListener('mouseout', () => {
-            mouse.x = -9999;
-            mouse.y = -9999;
-        });
-        window.addEventListener('scroll', () => {
-            scrollY = window.scrollY;
-        });
-        window.addEventListener('resize', resize);
-
-        resize();
-        if (!reduceMotion) draw();
-        else {
-            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-            ctx.clearRect(0, 0, W, H);
-        }
     }
 
     /* -----------------------------------------------------
-       2. Reveal on scroll
+       2. Lando-style Horizontal Pinned Sections
+       ----------------------------------------------------- */
+    const hSections = Array.from(document.querySelectorAll('[data-horizontal-section]'));
+    const hState = [];
+
+    function setupHorizontalSections() {
+        const isDesktop = window.innerWidth >= 768 && !reduceMotion;
+
+        hSections.forEach((section, idx) => {
+            const track = section.querySelector('.h-track');
+            const progressBar = section.querySelector('[data-h-progress]');
+            if (!track) return;
+
+            if (!isDesktop) {
+                section.style.height = '';
+                track.style.transform = '';
+                if (progressBar) progressBar.style.width = '0%';
+                hState[idx] = null;
+                return;
+            }
+
+            // Reset transform before measuring scrollWidth
+            track.style.transform = 'translate3d(0, 0, 0)';
+            const maxX = Math.max(0, track.scrollWidth - window.innerWidth + 48);
+            section.style.height = `${window.innerHeight + maxX}px`;
+            hState[idx] = { section, track, progressBar, maxX };
+        });
+
+        updateHorizontalSections();
+    }
+
+    function updateHorizontalSections() {
+        hState.forEach((item) => {
+            if (!item || item.maxX <= 0) return;
+            const rect = item.section.getBoundingClientRect();
+            const progress = Math.min(1, Math.max(0, -rect.top / item.maxX));
+            const tx = -progress * item.maxX;
+            item.track.style.transform = `translate3d(${tx.toFixed(2)}px, 0, 0)`;
+            if (item.progressBar) {
+                item.progressBar.style.width = `${(progress * 100).toFixed(2)}%`;
+            }
+        });
+    }
+
+    if (hSections.length) {
+        setupHorizontalSections();
+        window.addEventListener('load', setupHorizontalSections);
+        window.addEventListener('resize', setupHorizontalSections);
+        window.addEventListener('scroll', updateHorizontalSections, { passive: true });
+    }
+
+    if (lenis) {
+        function raf(time) {
+            lenis.raf(time);
+            updateHorizontalSections();
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    }
+
+    /* -----------------------------------------------------
+       3. Reveal on scroll + Mask Text
        ----------------------------------------------------- */
     const revealEls = document.querySelectorAll('.reveal-anim');
-
-    function revealAll() {
-        revealEls.forEach((el) => el.classList.add('visible'));
-    }
+    const maskEls = document.querySelectorAll('[data-mask-text]');
 
     if ('IntersectionObserver' in window && !reduceMotion) {
         const revealObserver = new IntersectionObserver((entries, obs) => {
@@ -160,18 +96,31 @@
                     obs.unobserve(entry.target);
                 }
             });
-        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+        }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
 
         revealEls.forEach((el) => revealObserver.observe(el));
+
+        const maskObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+        maskEls.forEach((el) => maskObserver.observe(el));
     } else {
-        revealAll();
+        revealEls.forEach((el) => el.classList.add('visible'));
+        maskEls.forEach((el) => el.classList.add('is-revealed'));
     }
 
     /* -----------------------------------------------------
-       3. Card tilt + hover glow
+       4. Card tilt + hover glow
        ----------------------------------------------------- */
     document.querySelectorAll('.comic-card').forEach((card) => {
         card.addEventListener('mousemove', (e) => {
+            if (reduceMotion) return;
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -180,8 +129,8 @@
 
             const cx = rect.width / 2;
             const cy = rect.height / 2;
-            const rotX = ((y - cy) / cy) * -2.5;
-            const rotY = ((x - cx) / cx) * 2.5;
+            const rotX = ((y - cy) / cy) * -2.2;
+            const rotY = ((x - cx) / cx) * 2.2;
             card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px)`;
         });
         card.addEventListener('mouseleave', () => {
@@ -190,7 +139,7 @@
     });
 
     /* -----------------------------------------------------
-       4. Custom cursor + trails + click web-splat
+       5. Custom cursor + trails + click web-splat
        ----------------------------------------------------- */
     const cursorDot = document.getElementById('cursor-dot');
     const cursorRing = document.getElementById('cursor-ring');
@@ -201,7 +150,7 @@
     let ringX = mouseX;
     let ringY = mouseY;
 
-    const trailCount = 10;
+    const trailCount = 8;
     const trails = [];
     if (!reduceMotion && window.innerWidth >= 768) {
         for (let i = 0; i < trailCount; i++) {
@@ -232,7 +181,7 @@
         splat.style.left = `${e.clientX}px`;
         splat.style.top = `${e.clientY}px`;
         document.body.appendChild(splat);
-        setTimeout(() => splat.remove(), 700);
+        setTimeout(() => splat.remove(), 650);
     });
 
     function animateCursor() {
@@ -250,7 +199,7 @@
             t.y += (lastY - t.y) * (0.3 + i * 0.02);
             t.el.style.left = `${t.x}px`;
             t.el.style.top = `${t.y}px`;
-            t.el.style.opacity = (1 - i / trailCount) * 0.6;
+            t.el.style.opacity = (1 - i / trailCount) * 0.55;
             t.el.style.transform = `translate(-50%, -50%) scale(${1 - i / trailCount})`;
             lastX = t.x;
             lastY = t.y;
@@ -266,22 +215,22 @@
     });
 
     /* -----------------------------------------------------
-       5. Scroll spider
+       6. Scroll spider
        ----------------------------------------------------- */
     const scrollSpider = document.getElementById('scroll-spider');
     if (scrollSpider) {
-        const update = () => {
+        const updateSpider = () => {
             const max = document.documentElement.scrollHeight - window.innerHeight;
             const pct = max > 0 ? window.scrollY / max : 0;
             scrollSpider.style.top = `${pct * (window.innerHeight - 60) + 30}px`;
         };
-        window.addEventListener('scroll', update, { passive: true });
-        window.addEventListener('resize', update);
-        update();
+        window.addEventListener('scroll', updateSpider, { passive: true });
+        window.addEventListener('resize', updateSpider);
+        updateSpider();
     }
 
     /* -----------------------------------------------------
-       6. Mobile menu
+       7. Mobile menu
        ----------------------------------------------------- */
     const burger = document.getElementById('nav-burger');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -293,6 +242,42 @@
     }
 
     /* -----------------------------------------------------
-       7. Guestbook — handled by guestbook.js
+       8. Page transition + smooth anchor navigation
        ----------------------------------------------------- */
+    const pageTransition = document.getElementById('page-transition');
+
+    function scrollToTarget(targetEl) {
+        if (!targetEl) return;
+        if (lenis) {
+            lenis.scrollTo(targetEl, { offset: 0, immediate: true });
+        } else {
+            targetEl.scrollIntoView({ behavior: 'auto' });
+        }
+        updateHorizontalSections();
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+        if (link.hasAttribute('data-open-guestbook')) return;
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (!href || href === '#') return;
+            const target = document.querySelector(href);
+            if (!target) return;
+
+            e.preventDefault();
+
+            if (!pageTransition || reduceMotion) {
+                scrollToTarget(target);
+                return;
+            }
+
+            pageTransition.classList.add('is-active');
+            setTimeout(() => {
+                scrollToTarget(target);
+            }, 260);
+            setTimeout(() => {
+                pageTransition.classList.remove('is-active');
+            }, 620);
+        });
+    });
 })();
