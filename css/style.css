@@ -18,6 +18,15 @@ body {
     background-color: #F8F8F3;
     color: #0F172A;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Allow selection only on interactive text fields */
+input, textarea, [contenteditable="true"],
+.chat-bubble, .gb-textarea, .gb-msg-text {
+    -webkit-user-select: text;
+    user-select: text;
 }
 
 /* ---------- Typography helpers ---------- */
@@ -256,28 +265,57 @@ body {
 }
 
 /* ---------- Hero ---------- */
-.hero-spider {
-    position: absolute;
-    top: -10px;
-    right: 4%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* ---------- Roaming Spider Mascot (no web, crawls randomly) ---------- */
+.roaming-spider {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 64px;
+    z-index: 875;
     pointer-events: none;
-    z-index: 1;
+    will-change: transform;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.32));
 }
-.hero-spider .thread {
-    width: 2px;
-    height: 120px;
-    background: linear-gradient(to bottom, transparent, rgba(11, 14, 26, 0.35));
+.roaming-spider .spider-mascot {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
-.spider-bob {
-    animation: spiderBob 3.2s ease-in-out infinite;
-    filter: drop-shadow(0 6px 12px rgba(230, 36, 41, 0.4));
+.roaming-spider.is-crawling .spider-mascot {
+    animation: spiderBodyWiggle 0.24s ease-in-out infinite alternate;
 }
-@keyframes spiderBob {
-    0%, 100% { transform: translateY(0) rotate(-2deg); }
-    50% { transform: translateY(18px) rotate(2deg); }
+@keyframes spiderBodyWiggle {
+    from { transform: rotate(-3deg) scale(1); }
+    to   { transform: rotate(3deg) scale(1.02); }
+}
+
+/* 8 legs alternating scuttle while crawling */
+.sleg { transform-origin: 70px 68px; }
+
+.roaming-spider.is-crawling .sleg-l1 { animation: sLegA 0.28s ease-in-out infinite; }
+.roaming-spider.is-crawling .sleg-l2 { animation: sLegB 0.28s ease-in-out infinite; }
+.roaming-spider.is-crawling .sleg-l3 { animation: sLegA 0.28s ease-in-out infinite 0.06s; }
+.roaming-spider.is-crawling .sleg-l4 { animation: sLegB 0.28s ease-in-out infinite 0.06s; }
+
+.roaming-spider.is-crawling .sleg-r1 { animation: sLegB 0.28s ease-in-out infinite; }
+.roaming-spider.is-crawling .sleg-r2 { animation: sLegA 0.28s ease-in-out infinite; }
+.roaming-spider.is-crawling .sleg-r3 { animation: sLegB 0.28s ease-in-out infinite 0.06s; }
+.roaming-spider.is-crawling .sleg-r4 { animation: sLegA 0.28s ease-in-out infinite 0.06s; }
+
+@keyframes sLegA {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(-13deg); }
+}
+@keyframes sLegB {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(13deg); }
+}
+
+/* Burst particles when spider is clicked */
+@keyframes spiderBurst {
+    0%   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--bx)), calc(-50% + var(--by))) scale(0); opacity: 0; }
 }
 
 .scroll-hint {
@@ -472,70 +510,71 @@ body {
     .hero-medallion::before { height: 52px; }
 }
 
-/* ---------- Guestbook FAB ---------- */
-.guest-fab {
-    position: fixed;
-    right: 24px;
-    bottom: 100px;
-    z-index: 890;
+/* ---------- Guestbook Navbar Button ---------- */
+/* Replaces the old floating FAB; now lives inside the navbar */
+.nav-guestbook-btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 0.85rem 0.55rem 0.6rem;
-    border: 3px solid var(--ink);
-    border-radius: 9999px;
-    background: linear-gradient(135deg, var(--red), var(--darkred));
-    color: #fff;
-    font-family: 'Bangers', cursive;
-    font-size: 1rem;
-    letter-spacing: 0.06em;
-    box-shadow: 4px 4px 0 var(--ink), 0 8px 28px rgba(230, 36, 41, .35);
+    gap: 0.35rem;
+    padding-bottom: 2px;
+    background: none;
+    border: none;
     cursor: pointer;
-    transition: transform 0.18s, box-shadow 0.18s, opacity 0.25s;
-    animation: fabIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
-    user-select: none;
-    white-space: nowrap;
+    color: #334155;
+    font-weight: 700;
+    font-size: inherit;
+    font-family: inherit;
+    transition: color 0.2s;
 }
-.guest-fab:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink), 0 10px 32px rgba(230,36,41,.45); }
-.guest-fab:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
-
-.guest-fab-icon {
-    width: 28px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0,0,0,.22);
-    border: 2px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    flex-shrink: 0;
+.nav-guestbook-btn::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -4px;
+    height: 3px; width: 0;
+    background: var(--red);
+    transition: width 0.25s ease;
+    border-radius: 2px;
 }
-.guest-fab-icon svg { width: 16px; height: 16px; }
+.nav-guestbook-btn:hover { color: var(--red); }
+.nav-guestbook-btn:hover::after { width: 100%; }
 
-.guest-fab-count {
-    min-width: 22px; height: 22px;
-    padding: 0 5px;
+/* Count badge */
+.nav-gb-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
     border-radius: 9999px;
-    background: var(--yellow);
-    color: var(--ink);
-    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--red);
+    color: #fff;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 800;
-    border: 2px solid var(--ink);
+    border: 1.5px solid var(--ink);
+    line-height: 1;
+    vertical-align: middle;
+    /* hidden when empty */
+}
+.nav-gb-count:empty { display: none; }
+
+/* Mobile Guestbook button (looks like mobile-link) */
+.mobile-link--btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+    padding: 0;
 }
 
-body.chat-open .guest-fab {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(10px) scale(0.92);
-}
-
-@keyframes fabIn {
-    from { opacity: 0; transform: translateY(16px) scale(0.88); }
-    to   { opacity: 1; transform: none; }
-}
-
-@media (max-width: 640px) {
-    .guest-fab { right: 16px; bottom: 96px; padding: 0.5rem 0.7rem 0.5rem 0.55rem; font-size: 0.9rem; }
-}
+/* Legacy .guest-fab styles removed — button now in navbar */
 
 /* ---------- Guestbook overlay & drawer ---------- */
 .guestbook-overlay {
@@ -1832,7 +1871,7 @@ html.js-ready [data-mask-text].is-revealed {
 
 @media (max-width: 768px) {
     .mascot { left: 16px; bottom: 16px; width: 50px; height: 50px; }
-    .hero-spider { right: -10px; transform: scale(0.7); }
+    .roaming-spider { width: 48px; height: 48px; }
     .web-timeline { padding-left: 34px; }
     .web-node-dot { left: -34px; }
     .comic-title { -webkit-text-stroke: 1.5px var(--ink); text-shadow: 3px 3px 0 var(--ink); }
@@ -1849,7 +1888,8 @@ html.js-ready [data-mask-text].is-revealed {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .spider-bob, .chat-toggle, .scroll-hint i, .hero-medallion, .guest-fab,
+    .roaming-spider .spider-mascot, .roaming-spider .sleg,
+    .chat-toggle, .scroll-hint i, .hero-medallion, .guest-fab,
     .mascot, .mascot-wave, .mascot-exc, .mascot-zzz .mascot-z, .mascot-acc-glass,
     .tech-marquee-track, .h-scroll-hint i { animation: none !important; }
     .reveal-anim, html.js-ready .reveal-anim.visible {

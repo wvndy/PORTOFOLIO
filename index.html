@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -119,11 +119,15 @@
                 <li><a href="#hero" class="nav-link">Home</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#journey" class="nav-link">Journey</a></li>
-                <li><a href="#guestbook" class="nav-link" data-open-guestbook>Guestbook</a></li>
+                <li>
+                    <button id="guestbook-toggle" type="button" class="nav-link nav-guestbook-btn" aria-controls="guestbook-drawer" aria-expanded="false">
+                        Guestbook<span id="guestbook-fab-count" class="nav-gb-count" aria-live="polite"></span>
+                    </button>
+                </li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <!-- Music Toggle Button -->
-            <button id="music-toggle" class="music-toggle-btn" aria-label="Play music" title="Feel Good Inc. — Gorillaz">
+            <button id="music-toggle" class="music-toggle-btn" aria-label="Play music" title="Feel Good Inc. � Gorillaz">
                 <!-- Icon: volume on (playing) -->
                 <svg class="music-icon-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
                     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
@@ -144,14 +148,14 @@
             <a href="#hero" class="mobile-link">Home</a>
             <a href="#about" class="mobile-link">About</a>
             <a href="#journey" class="mobile-link">Journey</a>
-            <a href="#guestbook" class="mobile-link" data-open-guestbook>Guestbook</a>
+            <button type="button" class="mobile-link mobile-link--btn" data-open-guestbook>Guestbook</button>
             <a href="#contact" class="mobile-link">Contact</a>
         </div>
 
         <!-- Hero -->
         <section id="hero" class="min-h-[92vh] flex flex-col justify-center items-start pt-24 relative">
             <!-- 2 spider medallions -->
-            <div class="hero-medallions" aria-hidden="true">
+            <!-- <div class="hero-medallions" aria-hidden="true">
                 <span class="hero-medallion hero-medallion--red">
                     <svg viewBox="0 0 48 48" fill="currentColor">
                         <ellipse cx="24" cy="20" rx="7" ry="6" />
@@ -166,7 +170,7 @@
                         <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
                     </svg>
                 </span>
-            </div>
+            </div> -->
 
             <div class="max-w-3xl reveal-anim relative z-10">
                 <div class="comic-badge mb-7">
@@ -190,17 +194,6 @@
                         Contact Me
                     </a>
                 </div>
-            </div>
-
-            <!-- Hanging spider -->
-            <div class="hero-spider" aria-hidden="true">
-                <div class="thread"></div>
-                <svg viewBox="0 0 120 120" width="110" height="110" fill="#E62429" class="spider-bob">
-                    <ellipse cx="60" cy="44" rx="15" ry="13" />
-                    <ellipse cx="60" cy="72" rx="22" ry="20" />
-                    <ellipse cx="60" cy="78" rx="9" ry="11" fill="#A81219" />
-                    <path d="M47 38 L20 16 M50 33 L34 6 M73 33 L86 6 M70 38 L100 16 M39 68 L8 58 M37 76 L5 80 M83 76 L115 80 M81 68 L112 58" stroke="#E62429" stroke-width="5" fill="none" stroke-linecap="round" />
-                </svg>
             </div>
 
             <div class="scroll-hint reveal-anim">
@@ -478,7 +471,7 @@
             <div class="mascot-exc" data-exc>!</div>
 
             <!-- waving hand -->
-            <div class="mascot-wave" data-wave>🖐️</div>
+            <div class="mascot-wave" data-wave>???</div>
 
             <!-- accessory: magnifying glass (search mode) -->
             <div class="mascot-acc" data-acc>
@@ -498,20 +491,6 @@
             <div class="mascot-leg mascot-leg--r"></div>
         </div>
     </div>
-
-    <!-- Guestbook floating button -->
-    <button id="guestbook-toggle" class="guest-fab" type="button" aria-label="Buka buku tamu" aria-controls="guestbook-drawer" aria-expanded="false">
-        <span class="guest-fab-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48" fill="currentColor">
-                <ellipse cx="24" cy="20" rx="7" ry="6" />
-                <ellipse cx="24" cy="31" rx="10" ry="9" />
-                <path d="M18 16 L6 8 M20 14 L12 3 M28 14 L36 3 M30 16 L42 8 M15 29 L3 25 M14 33 L2 34 M33 33 L46 34 M34 29 L45 25" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" />
-            </svg>
-        </span>
-        <span class="guest-fab-label">Guestbook</span>
-        <span id="guestbook-fab-count" class="guest-fab-count" aria-live="polite">0</span>
-    </button>
-
     <!-- Guestbook drawer -->
     <div id="guestbook-overlay" class="guestbook-overlay" aria-hidden="true"></div>
 
